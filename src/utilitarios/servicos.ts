@@ -1,4 +1,4 @@
-export default class Services {
+export default class Servicos {
 
   static async checarRequisicao(
     response: any

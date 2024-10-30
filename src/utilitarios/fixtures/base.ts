@@ -1,14 +1,15 @@
 import { test as base } from "@playwright/test";
-import { FinanceiroPage } from "../Pages/FinanceiroPage";
-import { LoginPage } from "../Pages/LoginPage";
-import { MainPage } from "../Pages/MainPage";
-import { TipoDePagina } from "../../src/Utils/TipoDePagina";
+import { FinanceiroPage } from "../../paginas/FinanceiroPage";
+import { LoginPage } from "../../paginas/LoginPage";
+import { MainPage } from "../../paginas/MainPage";
+import { TipoPagina } from "../TipoPagina";
 
 export const test = base.extend<{
   paginaLogin: LoginPage;
   paginaPrincipal: MainPage;
   paginaFinanceiro: FinanceiroPage;
 }>({
+  
   paginaLogin: async ({ page }, use) => {
     const paginaLogin = new LoginPage(page);
     await paginaLogin.entrarPaginaLogin();
@@ -21,7 +22,7 @@ export const test = base.extend<{
   },
 
   paginaFinanceiro: async ({ paginaPrincipal }, use) => {
-    const paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoDePagina.FINANCEIRO);
+    const paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     await use(paginaFinanceiro);
   },
   

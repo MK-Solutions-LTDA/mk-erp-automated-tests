@@ -1,4 +1,4 @@
-export enum TipoDePagina {
+export enum TipoPagina {
 	WORKSPACE = 'li[id="1833270"]',
 	ESTOQUE = 'li[id="1200344"]',
 	FINANCEIRO = 'li[id="946094"]',

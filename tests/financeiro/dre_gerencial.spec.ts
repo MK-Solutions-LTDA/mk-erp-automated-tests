@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../src/Pages/LoginPage";
-import { MainPage } from "../../src/Pages/MainPage";
-import { TipoDePagina } from "../../src/Utils/TipoDePagina";
-import { FinanceiroPage } from "../../src/Pages/FinanceiroPage";
+import { LoginPage } from "../../src/paginas/LoginPage";
+import { MainPage } from "../../src/paginas/MainPage";
+import { TipoPagina } from "../../src/utilitarios/TipoPagina";
 import { url } from "../../Setup";
+import { DreGerencial } from "../../src/paginas/subpaginas/financeiro/DreGerencial";
 
 let paginaLogin: LoginPage;
 let paginaPrincipal: MainPage;
-let paginaFinanceiro: FinanceiroPage;
+let PaginaDreGerencial: DreGerencial;
 
 test.use({
   video: { mode: "on", size: { width: 1920, height: 1080 } },
@@ -23,8 +23,8 @@ test.describe("DRE Gerencial", () => {
 
     await paginaLogin.entrarPaginaLogin();
     paginaPrincipal = await paginaLogin.realizar_login();
-    paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoDePagina.FINANCEIRO);
-    await paginaFinanceiro.navegarParaPainel(
+    PaginaDreGerencial = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    await PaginaDreGerencial.navegarParaPainel(
       'li[id="853772"]',
       'iframe[componenteaba="DRE GerencialClosePainelAba"]'
     );
@@ -38,21 +38,21 @@ test.describe("DRE Gerencial", () => {
     await page.close();
   });
   test("Deve gerar relatorio mensal com sucesso", async ({ page }) =>{
-    await paginaFinanceiro.gerarMensalDRE();
+    await PaginaDreGerencial.gerarMensalDRE();
     const responsePromise = await page.waitForResponse(`${url}/mk/WSMKDRERelatorio.rule?sys=MK0`);
     const response = await responsePromise;
     expect(response?.ok()).toBeTruthy();
   });
   test("Deve gerar relatorio anual com sucesso", async ({ page }) =>{
-    await paginaFinanceiro.gerarAnualDRE();
+    await PaginaDreGerencial.gerarAnualDRE();
     const responsePromise = await page.waitForResponse(`${url}/mk/WSMKDRERelatorio.rule?sys=MK0`);
     const response = await responsePromise;
     expect(response?.ok()).toBeTruthy();
   });
   test("Deve baixar relatorio anual com sucesso", async ({ page }) =>{
-    await paginaFinanceiro.gerarAnualDRE();
+    await PaginaDreGerencial.gerarAnualDRE();
     await page.waitForResponse(`${url}/mk/WSMKDRERelatorio.rule?sys=MK0`);
-    await paginaFinanceiro.baixarDRE();
+    await PaginaDreGerencial.baixarDRE();
     expect(
       page.on('download', download => {
         expect(download.suggestedFilename()).toBe('DRE_ANUAL.pdf');
@@ -60,7 +60,7 @@ test.describe("DRE Gerencial", () => {
     )
   });
   test("Deve imprimir relatorio anual com sucesso", async ({ page }) =>{
-    await paginaFinanceiro.gerarAnualDRE();
-    await paginaFinanceiro.imprimirDRE();
+    await PaginaDreGerencial.gerarAnualDRE();
+    await PaginaDreGerencial.imprimirDRE();
   });
 });
