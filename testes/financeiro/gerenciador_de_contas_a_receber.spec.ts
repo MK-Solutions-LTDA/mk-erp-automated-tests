@@ -52,8 +52,6 @@ test.describe("Faturas", () => {
 
     const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
-
-    console.log("Fatura liquidada com sucesso");
   });
 
   test('Deve estornar uma fatura a receber com sucesso', async ({ page }) => {

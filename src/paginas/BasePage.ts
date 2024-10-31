@@ -6,7 +6,7 @@ const folderImagens = path.join(process.cwd(), "/src/imagens");
 
 export default class BasePage {
   page: Page;
-  telaAtual: any;
+  telaAtual: Frame | null | undefined;
 
   constructor(page: Page) {
     this.page = page;
@@ -27,6 +27,22 @@ export default class BasePage {
     const frameSys = await (await this.page.$('frame[name="mainsystem"]'))?.contentFrame();
     this.telaAtual = await (await frameSys?.$('iframe[name="mainform"]'))?.contentFrame();
   }
+
+    
+  @step('Preencher campo de busca')
+  async preencherCampoBusca(data: string) {
+    await this.telaAtual?.getByPlaceholder("Clique para buscar").click();
+    await this.telaAtual?.getByPlaceholder("Clique para buscar").pressSequentially(data);
+  }
+
+  @step('Clicar no botão com texto')
+  async clicarBotaoComTexto(text: string) { await this.telaAtual?.locator("button", { hasText: new RegExp(text, "gim") }).first().click(); }
+  
+  @step('Clicar no botão com nome')
+  async clicarBotaoComNome(name: string | RegExp) { await this.telaAtual?.getByRole("button", { name: name }).first().click() }
+
+  @step('Clicar no botão com texto')
+  async clicarTexto(texto: string) { await this.telaAtual?.getByText(texto).click() }
 
   @step('Mudar para iframe')
   async mudarParaIframe(seletor: string, parentFrame?: Frame | Page | null) {

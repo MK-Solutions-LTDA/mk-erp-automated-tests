@@ -1,4 +1,4 @@
-import { pass, user, url } from '../../Setup';
+import { pass, user, URL } from '../../Setup';
 import { Page } from '@playwright/test';
 import { MainPage } from './MainPage';
 import step from '../utilitarios/decorators';
@@ -10,7 +10,7 @@ export class LoginPage {
 	constructor(page: any) {this.page = page}
 
 	@step('Entrar na página de login')
-	async entrarPaginaLogin() { await this.page.goto(`${url}/mk/login/?sys=MK0`) }
+	async entrarPaginaLogin() { await this.page.goto(`${URL}/mk/login/?sys=MK0`) }
 
 	@step('Realizando login no sistema')
 	async realizar_login() {

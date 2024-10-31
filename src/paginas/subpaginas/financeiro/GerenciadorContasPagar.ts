@@ -22,9 +22,9 @@ export class GerenciadorContasPagar extends BasePage {
   }
 
   @step("Criar conta a pagar")
-  async criarContaAPagar(credorFatura: string, descricaoFatura: string, dataVencimentoFatura: string, valorFatura: string, opcaoFatura: string, planoConta: string) {
+  async criarContaAPagar(credorFatura: string, opcaoFatura: string, planoConta: string) {
     if (!this.telaAtual) await this.navegarParaContasAPagarTela();
-    await this.preencherDetalhes(credorFatura, descricaoFatura, dataVencimentoFatura, valorFatura, opcaoFatura);
+    await this.preencherDetalhes(credorFatura, opcaoFatura);
     await this.irProximaEtapa(opcaoFatura, planoConta);
   }
 
@@ -72,7 +72,7 @@ export class GerenciadorContasPagar extends BasePage {
     await this.aplicarFiltro();
     await this.selecionarFatura(idFatura);
     await this.clicarBotaoLiquidar();
-    if (liquidacaoParcial) await this.realizarLiquidacaoParcial(valor);
+    if (liquidacaoParcial) await this.realizarLiquidacaoParcial();
     await this.selecionarContaBanco();
     await this.preencherMotivoLiquidacao();
     await this.confirmarLiquidacao();
@@ -90,13 +90,20 @@ export class GerenciadorContasPagar extends BasePage {
   }
 
   @step("Preencher detalhes da conta")
-  async preencherDetalhes(credorFatura: string, descricaoFatura: string, dataVencimentoFatura: string, valorFatura: string, opcaoFatura: string) {
+  async preencherDetalhes(credorFatura: string, opcaoFatura: string) {
     if (!this.telaAtual) await this.navegarParaContasAPagarTela();
-    await this.clicarBotaoComTexto("Nova");
-    await this.selecionarOpcaoNoCombobox(credorFatura);
-    await this.preencherCampo("description", descricaoFatura);
-    await this.preencherCampo("dueDate", dataVencimentoFatura);
-    await this.preencherCampo("value", valorFatura);
+    await this.telaAtual?.locator("button", { hasText: new RegExp("Nova", "gim") }).first().click();
+    await this.telaAtual?.getByRole('combobox').first().click();
+    await this.telaAtual?.getByPlaceholder('Pesquisar').click();
+    await this.telaAtual?.getByPlaceholder('Pesquisar').pressSequentially(credorFatura);
+    await this.telaAtual?.getByRole('option').filter({hasText: credorFatura}).first().click();
+    await this.telaAtual?.locator('input[name="description"]').click();
+    await this.telaAtual?.locator('input[name="description"]').pressSequentially(faker.lorem.words({min: 3, max: 6}));
+    await this.telaAtual?.locator('input[name="dueDate"]').pressSequentially(faker.date.future().toLocaleDateString());
+    await this.telaAtual?.locator('input[name="value"]')?.click();
+    await this.telaAtual?.locator('input[name="value"]').pressSequentially(faker.number.int({ min: 100, max: 1000 }).toString());
+    await this.telaAtual?.getByPlaceholder('Clique para escrever').click();
+    await this.telaAtual?.getByPlaceholder('Clique para escrever').pressSequentially(faker.lorem.sentences());
     await this.selecionarOpcaoFatura(opcaoFatura);
   }
 
@@ -285,7 +292,7 @@ export class GerenciadorContasPagar extends BasePage {
   
   @step('Ir para a próxima etapa')
   async irProximaEtapa(opcaoFatura: string, planoDeContas: string) {
-    await this.clicarBotaoComNome("Próximo");
+    await this.telaAtual?.getByRole("button", { name: /(Nova|Criar|Próximo|Adicionar)/gim }).first().click();
     if (opcaoFatura === "Simples") {
       await this.preencherDetalhesContaSemRateio();
       await this.finalizarContaSemRateio();
@@ -326,20 +333,14 @@ export class GerenciadorContasPagar extends BasePage {
     await this.telaAtual?.locator("button").filter({ hasText: "Todas as colunas" }).click();
     await this.telaAtual?.getByLabel("Fatura").click();
   }
-  
-  @step('Preencher campo de busca')
-  async preencherCampoBusca(idFatura: string) {
-    await this.telaAtual?.getByPlaceholder("Clique para buscar").click();
-    await this.telaAtual?.getByPlaceholder("Clique para buscar").pressSequentially(idFatura);
-  }
 
   @step('Realizar liquidação parcial')
-  async realizarLiquidacaoParcial(valor: string) {
+  async realizarLiquidacaoParcial() {
     await this.telaAtual?.getByRole("switch").first().click();
     await this.telaAtual?.locator('input[name="valorLiquidacao"]').click();
     await this.telaAtual?.locator('input[name="valorLiquidacao"]').press("Control+A");
     await this.telaAtual?.locator('input[name="valorLiquidacao"]').press("Backspace");
-    await this.telaAtual?.locator('input[name="valorLiquidacao"]').pressSequentially(valor);
+    await this.telaAtual?.locator('input[name="valorLiquidacao"]').pressSequentially(faker.number.int({ max: 999 }).toString());
   }
   
   @step('Selecionar conta banco')
@@ -370,20 +371,11 @@ export class GerenciadorContasPagar extends BasePage {
     await this.telaAtual?.getByLabel(`${quantidade} resultados`).click();
   }
 
-  @step('Clicar no botão com texto')
-  async clicarTexto(texto: string) { await this.telaAtual?.getByText(texto).click() }
-
   @step('Preencher campo')
   async preencherCampo(name: string, value: string) { await this.telaAtual?.locator(`input[name="${name}"]`).first().pressSequentially(value); }
     
   @step('Confirmar liquidação')
   async confirmarLiquidacao() { await this.telaAtual?.getByRole("button", { name: "Confirmar" }).first().click(); }
-
-  @step('Clicar no botão com texto')
-  async clicarBotaoComTexto(text: string) { await this.telaAtual?.locator("button", { hasText: new RegExp(text, "gim") }).first().click(); }
-  
-  @step('Clicar no botão com nome')
-  async clicarBotaoComNome(name: string | RegExp) { await this.telaAtual?.getByRole("button", { name: name }).first().click() }
 
   @step('Selecionar fatura')
   async selecionarFatura(idFatura: string) { await this.telaAtual?.getByRole("row", { name: idFatura }).getByRole("button").nth(2).click(); }

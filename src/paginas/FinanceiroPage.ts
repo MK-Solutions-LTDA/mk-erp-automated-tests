@@ -9,18 +9,31 @@ export class FinanceiroPage extends BasePage {
   constructor(page: Page) {
     super(page);
   }
-
-  @step('Indo para página')
+  
+  @step('Ir para página')
   async irParaPagina(tipoDePagina: ItensMenu): Promise<any> {
-    await this.definirFramesPrincipais();
+    await this.definirFramesPrincipaisFinanceiro();
     await this.clicarNoSubmenu(tipoDePagina);
     return this.navegarParaPagina(tipoDePagina);
   }
+  
 
+  @step('Definir frames principais do menu financeiro')
+  async definirFramesPrincipaisFinanceiro() {
+	await this.page.waitForLoadState('domcontentloaded');
+	const mainsystem = await this.mudarParaIframe('frame[name="mainsystem"]', this.page);
+	const mainform = await this.mudarParaIframe('iframe[name="mainform"]', mainsystem);
+	const financeiroAba = await this.mudarParaIframe('iframe[componenteaba="Financeiro - PainelCloseAbaPrincipal"]',mainform);
+	this.telaAtual = await this.mudarParaIframe('iframe[name="mainform"]',financeiroAba);
+	return this.telaAtual;
+  }
+
+  @step('Clicar no submenu')
   private async clicarNoSubmenu(tipoDePagina: ItensMenu) {
     await this.telaAtual?.click(tipoDePagina.valueOf());
   }
 
+  @step('Navegar para página')
   private async navegarParaPagina(tipoDePagina: ItensMenu): Promise<any> {
     switch (tipoDePagina) {
       case ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR:

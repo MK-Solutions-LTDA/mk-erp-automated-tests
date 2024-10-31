@@ -1,13 +1,13 @@
-import { expect, test } from "@playwright/test";
+import { GerenciadorContasPagar } from "../../src/paginas/subpaginas/financeiro/GerenciadorContasPagar";
+import { FinanceiroPage } from "../../src/paginas/FinanceiroPage";
+import { MainPage } from "../../src/paginas/MainPage";
 import { LoginPage } from "../../src/paginas/LoginPage";
 import { TipoPagina } from "../../src/utilitarios/TipoPagina";
-import { url } from "../../Setup";
-import Servicos from "../../src/utilitarios/servicos";
-import { faker } from "@faker-js/faker/locale/pt_BR";
-import { GerenciadorContasPagar } from "../../src/paginas/subpaginas/financeiro/GerenciadorContasPagar";
-import { MainPage } from "../../src/paginas/MainPage";
-import { FinanceiroPage } from "../../src/paginas/FinanceiroPage";
 import { ItensMenu } from "../../src/utilitarios/itens_submenu/financeiro/financeiro_submenus";
+import { API } from "../../src/utilitarios/api/financeiro/gerenciador_contas_pagar/apimap";
+import { expect, test } from "@playwright/test";
+import { faker } from "@faker-js/faker/locale/pt_BR";
+import Servicos from "../../src/utilitarios/servicos";
 
 // test.use({
 //   video: { mode: "on", size: { width: 1920, height: 1080 } },
@@ -42,20 +42,21 @@ test.describe('Faturas', () => {
   });
 
   test("Deve criar uma fatura sem rateio com sucesso", async ({ page }) => {
-    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {return resolve(response)}})});
-    await paginaGerenciadorContasPagar.criarContaAPagar("#",faker.lorem.sentences(),faker.date.future().toDateString(),faker.finance.amount(),"Simples","celular novo");
-    console.log("Fatura sem rateio criada com sucesso!");
+    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${API.NOVA_FATURA}`)) {return resolve(response)}})});
+    console.log(API.NOVA_FATURA);
+    await paginaGerenciadorContasPagar.criarContaAPagar("#", "Simples", "celular novo");
     const response = await responsePromise;
-    expect(await Servicos.checarRequisicao(response)).toBeTruthy();
+    const result = await Servicos.checarRequisicao(response);
+    expect(result.sucesso).toBeTruthy(); 
   });
 
   test("Deve criar uma fatura com rateio com sucesso", async ({ page }) => {
     const responsePromise = new Promise(async (resolve) => {
-      page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {resolve(response); }
+      page.on("response", (response) => { if (response.url().includes(`${API.NOVA_FATURA}`)) {resolve(response); }
       });
     });
 
-    await paginaGerenciadorContasPagar.criarContaAPagar("#",faker.lorem.sentences(),faker.date.future().toDateString(),faker.finance.amount(),"Rateio","celular novo"
+    await paginaGerenciadorContasPagar.criarContaAPagar("#","Rateio","celular novo"
     );
     
     console.log("Fatura com rateio criada com sucesso!");
@@ -66,63 +67,74 @@ test.describe('Faturas', () => {
   });
 
   test("Deve liquidar parcialmente a fatura com sucesso", async ({ page }) => {
-    await paginaGerenciadorContasPagar.criarContaAPagar("#",faker.lorem.sentences(),faker.date.future().toDateString(),faker.finance.amount(),"Rateio","celular novo"
-    );
-
-    const criarFaturaApi = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {resolve(response)}})});
-
-    criarFaturaApi.then(async (response) => {
-      const responseFatura = await Servicos.checarRequisicao(response);
-      const idFatura = responseFatura.sucesso.match(/Fatura\s+(\d{6})/i)?.[1]!;
-      console.log(idFatura);
-      if (!idFatura) { throw new Error("Não foi possível encontrar o ID da fatura");
-      }
-      if (idFatura != null || idFatura != undefined) { await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), true); console.log("Fatura liquidada parcialmente com sucesso!");
-      }
-    });
-
-    const responsePromise = new Promise(async (resolve) => {
-      page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPLiquidarFatura.rule`)) {resolve(response); }
+    const criarFaturaApi = new Promise(async (resolve) => {
+      page.on("response", async (response) => { if (response.url().includes(`${API.NOVA_FATURA}`)) {
+        console.log("Método da Requisição:", await response.allHeaders());
+        console.log("URL da Requisição:", await response.url());
+        console.log("Headers da Requisição:", await response.headers());
+        console.log("Dados da Requisição:", await response.headersArray());
+        resolve(response); }
       });
     });
+
+    await paginaGerenciadorContasPagar.criarContaAPagar("#", "Rateio", "testeeee");
+
+    await criarFaturaApi.then(async (response) => {
+      const responseFatura = await Servicos.checarRequisicao(response);
+      const idFatura = responseFatura?.sucesso?.sucess?.match(/\s+(\d{6})/i)?.[0];
+      console.log(await idFatura);
+      if (idFatura != null || idFatura != undefined) { await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), true);
+    }});
+
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.LIQUIDAR_FATURA}`)) {resolve(response)}})})
 
     const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });
 
   test("Deve liquidar integralmente a fatura com sucesso", async ({ page }) => {
-    await paginaGerenciadorContasPagar.criarContaAPagar("#", faker.lorem.sentences(), faker.date.future().toDateString(), faker.finance.amount(), "Rateio", "celular novo");
-    const criarFaturaApi = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {resolve(response); }});
+    const criarFaturaApi = new Promise(async (resolve) => {
+      page.on("response", async (response) => { if (response.url().includes(`${API.NOVA_FATURA}`)) {
+        console.log("Método da Requisição:", await response.allHeaders());
+        console.log("URL da Requisição:", await response.url());
+        console.log("Headers da Requisição:", await response.headers());
+        console.log("Dados da Requisição:", await response.headersArray());
+        resolve(response); }
+      });
     });
 
-    criarFaturaApi.then(async (response) => {
+    await paginaGerenciadorContasPagar.criarContaAPagar("#", "Rateio", "testeeee");
+
+    await criarFaturaApi.then(async (response) => {
       const responseFatura = await Servicos.checarRequisicao(response);
-      const idFatura = responseFatura.sucesso.match(/Fatura\s+(\d{6})/i)?.[1]!;
-      console.log(idFatura);
-      if (!idFatura) { throw new Error("Não foi possível encontrar o ID da fatura") }
-      if (idFatura != null || idFatura != undefined) { await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), false); console.log("Fatura liquidada integralmente sucesso!");}
-    });
+      const idFatura = responseFatura?.sucesso?.sucess?.match(/\s+(\d{6})/i)?.[0];
+      console.log(await idFatura);
+      if (idFatura != null || idFatura != undefined) { await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), false);
+    }});
 
-    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPLiquidarFatura.rule`)) {resolve(response)}})})
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.LIQUIDAR_FATURA}`)) {resolve(response)}})})
 
     const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });
 
   test("Deve liquidar as faturas em massa com sucesso", async ({ page }) => {
-    console.log("Liquidando faturas em massa...");
+    const responsePromise = new Promise(async (resolve) => {
+      page.on("response", async (response) => { if (response.url().includes(`${API.LIQUIDAR_FATURA_MASSA}`)) {
+        console.log("Método da Requisição:", await response.allHeaders());
+        console.log("URL da Requisição:", await response.url());
+        console.log("Headers da Requisição:", await response.headers());
+        // console.log("Dados da Requisição:", response.request());
+        resolve(response); }
+      });
+    });    
     await paginaGerenciadorContasPagar.alteracaoFaturaEmMassa("Pagar", faker.lorem.sentences());
-    console.log("Faturas liquidadas com sucesso!");
-    console.log("Chamando a requisição...");
-    const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPLiquidarFaturasMassa.rule?`));
-    console.log("Requisição concluída!");
-    console.log("Checando se a requisição foi bem-sucedida...");
+    const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
-    console.log("Requisição bem-sucedida!");
   });
 
   test("Deve estornar a fatura integralmente com sucesso", async ({ page }) => {
-    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPEstornarFatura.rule`)) {resolve(response) }})})
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.ESTORNAR_FATURA}`)) {resolve(response) }})})
 
     await paginaGerenciadorContasPagar.estornarFatura('BB - Boleto', false);
     console.log("Fatura estornada integralmente com sucesso!");
@@ -131,15 +143,16 @@ test.describe('Faturas', () => {
   });
 
   test("Deve estornar a fatura parcialmente com sucesso", async ({ page }) => {
-    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPEstornarFatura.rule`)) {resolve(response)}})})
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.ESTORNAR_FATURA}`)) {resolve(response)}})})
 
-    await paginaGerenciadorContasPagar.criarContaAPagar("#", faker.lorem.sentences(), faker.date.future().toDateString(), faker.finance.amount(), "Rateio", "celular novo");
+    await paginaGerenciadorContasPagar.criarContaAPagar("#", "Rateio", "celular novo");
     console.log("Fatura criada com sucesso!");
-    const criarFaturaApi = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {resolve(response)}})});
+    const criarFaturaApi = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.LIQUIDAR_FATURA}`)) {resolve(response)}})});
 
     criarFaturaApi.then(async (response) => {
       const responseFatura = await Servicos.checarRequisicao(response);
-      const idFatura = responseFatura.sucesso.match(/Fatura\s+(\d{6})/i)?.[1]!;
+      const responseReturn = responseFatura.sucesso;
+      const idFatura = responseReturn.match(/\s+(\d{6})/i)?.[0]!;
       console.log(idFatura);
       if (!idFatura) { throw new Error("Não foi possível encontrar o ID da fatura")}
       if (idFatura != null || idFatura != undefined) { 
@@ -157,36 +170,28 @@ test.describe('Faturas', () => {
   });
 
   test("Deve suspender a fatura com sucesso", async ({ page }) => {
-    console.log("Suspendendo fatura...");
     await paginaGerenciadorContasPagar.suspenderFatura("#", "Dificuldades financeiras");
-    console.log("Fatura suspensa com sucesso!");
-    console.log("Chamando a requisição...");
-    const response = await page.waitForResponse((response) =>response.url().includes(`${url}/mk/WSMKCPFaturaSuspensao.rule`));
-    console.log("Requisição concluída!");
-    console.log("Checando se a requisição foi bem-sucedida...");
+    const response = await page.waitForResponse((response) =>response.url().includes(`${API.SUSPENDER_FATURA}`));
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
-    console.log("Requisição bem-sucedida!");
   });
 
   test("Deve suspender das faturas em massa com sucesso", async ({ page }) => {
-    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturaSuspensaoMassa.rule`)) {resolve(response)}})});
+    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${API.SUSPENDER_FATURA_MASSA}`)) {resolve(response)}})});
     await paginaGerenciadorContasPagar.alteracaoFaturaEmMassa("Suspender", faker.lorem.sentences());
-    console.log("Faturas suspensas com sucesso!");
     const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });
 
   test("Deve remover a suspenção da fatura com sucesso", async ({ page }) => {
-    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturaRemoverSuspencao.rule`) ) {resolve(response)}})})
+    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${API.REMOVER_SUSPENSAO_FATURA}`) ) {resolve(response)}})})
 
     await paginaGerenciadorContasPagar.removerSuspencaoFatura();
-    console.log("Suspenção removida da fatura com sucesso!");
     const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });
 
   test("Deve remover a suspenção de faturas em massa com sucesso", async ({page}) => {
-    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturaRemoverSuspensaoMassa.rule`) ) {resolve(response); }})});
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.SUSPENDER_FATURA_MASSA}`) ) {resolve(response); }})});
 
     await paginaGerenciadorContasPagar.alteracaoFaturaEmMassa("Remover suspensão",faker.lorem.sentences());
 
@@ -195,7 +200,7 @@ test.describe('Faturas', () => {
   });
 
   test("Deve excluir a fatura com sucesso", async ({ page }) => {
-    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturaExclusao.rule?`) ) {resolve(response)}})})
+    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${API.EXCLUIR_FATURA}`) ) {resolve(response)}})})
 
     await paginaGerenciadorContasPagar.excluirContaAPagar();
 
@@ -204,14 +209,12 @@ test.describe('Faturas', () => {
   });
 
   test("Deve alterar a fatura com sucesso", async ({ page }) => {
-    console.log("Alterando fatura...");
     await paginaGerenciadorContasPagar.alterarInfosFatura();
-    console.log("Faturas alteradas com sucesso!");
   });
 
   test("Deve anexar imagens na fatura com sucesso", async ({ page }) => {
     await paginaGerenciadorContasPagar.anexarArquivos();
-    const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturaInserirAnexo.rule?`))
+    const response = await page.waitForResponse((response) => response.url().includes(`${API.INSERIR_ANEXO_FATURA}`));
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });
 });
@@ -222,9 +225,10 @@ test.describe("Despesas", () => {
 
     await paginaLogin.entrarPaginaLogin();
     paginaPrincipal = await paginaLogin.realizar_login();
-    paginaGerenciadorContasPagar = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
 
-    await paginaGerenciadorContasPagar.navegarParaPainel( 'li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
+    await paginaGerenciadorContasPagar.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
   });
   test.afterEach(async ({ page }, testInfo) => {
     console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
@@ -235,7 +239,7 @@ test.describe("Despesas", () => {
 
   test("Deve criar uma despesa fixa com rateio com sucesso", async ({page}) => {
 
-    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {resolve(response); }})});
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.NOVA_FATURA}`)) {resolve(response); }})});
 
     await paginaGerenciadorContasPagar.criarDespesaFixa("#", "Rateio", "celular novo");
 
@@ -244,7 +248,7 @@ test.describe("Despesas", () => {
   });
 
   test("Deve criar uma despesa fixa sem rateio com sucesso", async ({page}) => {
-    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => {if (response.url().includes(`${url}/mk/WSMKCPNovaFatura.rule`)) {resolve(response)}})});
+    const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => {if (response.url().includes(`${API.NOVA_FATURA}`)) {resolve(response)}})});
 
     await paginaGerenciadorContasPagar.criarDespesaFixa("#", "Simples", "celular novo");
 
@@ -255,7 +259,7 @@ test.describe("Despesas", () => {
 
 test.describe('Parcelamentos', () => {
   test("Deve criar um parcelamento com sucesso", async ({ page }) => {
-      const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPNovoParcelamento.rule?`) ) {resolve(response)}})});
+      const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${API.NOVO_PARCELAMENTO}`) ) {resolve(response)}})});
       await paginaGerenciadorContasPagar.criarParcelamentos("4");
       const response = await responsePromise;
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
@@ -264,7 +268,14 @@ test.describe('Parcelamentos', () => {
 
 test.describe("Paginação de resultados", () => {
   test.beforeEach(async ({ page }) => { 
-    await paginaGerenciadorContasPagar.navegarParaPainel('li[id="1878993"]','iframe[componenteaba="Gerenciador de Contas a PagarClosePainelAba"]');
+    paginaLogin = new LoginPage(page);
+
+    await paginaLogin.entrarPaginaLogin();
+    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
+
+    await paginaGerenciadorContasPagar.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
   });
 
   test.afterEach(async ({ page }, testInfo) => {
@@ -279,35 +290,35 @@ test.describe("Paginação de resultados", () => {
   test.describe("Aba de faturas", () => {
     test("Deve exibir mais resultados na listagem de faturas", async ({page}) => {
       
-      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=100`) ) {resolve(response)}})});
+      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.FATURAS}?limit=100`) ) {resolve(response)}})});
       await paginaGerenciadorContasPagar.alterarQuantidadeResultados("100", "Faturas")
       const response = await responsePromise;
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve alterar a quantidade de resultados exibidos para 150", async ({page}) => {
-      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=150`) ) {resolve(response)}})});
+      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.FATURAS}?limit=150`) ) {resolve(response)}})});
       await paginaGerenciadorContasPagar.alterarQuantidadeResultados("150", "Faturas");
       const response = await responsePromise;
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve navegar para a segunda página de resultados", async ({page}) => {
-      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=50`) ) {resolve(response)}})})
+      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.FATURAS}?limit=50&offset=50`) ) {resolve(response)}})})
       await paginaGerenciadorContasPagar.navegarPaginaResultados("2", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
       const response = await responsePromise;
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve navegar para a terceira página de resultados", async ({page}) => {
-      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=100`) ) {resolve(response)}})})
+      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.FATURAS}?limit=50&offset=100`) ) {resolve(response)}})})
       await paginaGerenciadorContasPagar.navegarPaginaResultados("3", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
       const response = await responsePromise;
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve acessar a última página de resultados", async ({ page }) => {
-      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=`) ) {resolve(response)}})})
+      const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.FATURAS}?limit=50&offset=`) ) {resolve(response)}})})
       await paginaGerenciadorContasPagar.navegarPaginaResultados("ultima", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
       const response = await responsePromise;
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
@@ -317,72 +328,86 @@ test.describe("Paginação de resultados", () => {
   test.describe("Aba de despesas fixas", () => {
     
     test.beforeEach(async ({ page }) => {
-      await paginaGerenciadorContasPagar.navegarParaPainel( 'li[id="1878993"]', 'iframe[componenteaba="Gerenciador de Contas a PagarClosePainelAba"]');
+      paginaLogin = new LoginPage(page);
+
+      await paginaLogin.entrarPaginaLogin();
+      paginaPrincipal = await paginaLogin.realizar_login();
+      paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+      paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
+  
+      await paginaGerenciadorContasPagar.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
     });
 
     test("Deve exibir mais resultados na listagem de despesas", async ({page}) => {
       await paginaGerenciadorContasPagar.alterarQuantidadeResultados("100", 'Despesas Fixas');
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=100`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=100`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve alterar a quantidade de resultados exibidos para 150", async ({page}) => {
       await paginaGerenciadorContasPagar.alterarQuantidadeResultados("150", 'Despesas Fixas');
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=150`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=150`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve navegar para a segunda página de resultados", async ({page}) => {
       await paginaGerenciadorContasPagar.navegarPaginaResultados("2", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=50`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=50&offset=50`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve navegar para a terceira página de resultados", async ({page}) => {
       await paginaGerenciadorContasPagar.navegarPaginaResultados("3", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=100`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=50&offset=100`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve acessar a última página de resultados", async ({ page }) => {
       await paginaGerenciadorContasPagar.navegarPaginaResultados("ultima", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=50&offset=`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
   });
 
   test.describe("Aba de parcelamentos", () => {
     test.beforeEach(async ({ page }) => {
-      await paginaGerenciadorContasPagar.navegarParaPainel( 'li[id="1878993"]', 'iframe[componenteaba="Gerenciador de Contas a PagarClosePainelAba"]');
+      paginaLogin = new LoginPage(page);
+
+      await paginaLogin.entrarPaginaLogin();
+      paginaPrincipal = await paginaLogin.realizar_login();
+      paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+      paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
+  
+      await paginaGerenciadorContasPagar.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
     });
 
     test("Deve exibir mais resultados na listagem de parcelamentos", async ({page}) => {
       await paginaGerenciadorContasPagar.alterarQuantidadeResultados("100", 'Parcelamentos');
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=100`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=100`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve alterar a quantidade de resultados exibidos para 150", async ({page}) => {
       await paginaGerenciadorContasPagar.alterarQuantidadeResultados("150", 'Parcelamentos');
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=150`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=150`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve navegar para a segunda página de resultados", async ({page}) => {
       await paginaGerenciadorContasPagar.navegarPaginaResultados("2", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=50`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=50&offset=50`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve navegar para a terceira página de resultados", async ({page}) => {
       await paginaGerenciadorContasPagar.navegarPaginaResultados("3", await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=100`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=50&offset=100`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
 
     test("Deve acessar a última página de resultados", async ({ page }) => {
       await paginaGerenciadorContasPagar.navegarPaginaResultados("ultima", await await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
-      const response = await page.waitForResponse((response) => response.url().includes(`${url}/mk/WSMKCPFaturas.rule?limit=50&offset=`));
+      const response = await page.waitForResponse((response) => response.url().includes(`${API.FATURAS}?limit=50&offset=`));
       expect(await Servicos.checarRequisicao(response)).toBeTruthy();
     });
   });
@@ -395,9 +420,10 @@ test.describe("Faturas vencidas", () => {
 
     await paginaLogin.entrarPaginaLogin();
     paginaPrincipal = await paginaLogin.realizar_login();
-    paginaGerenciadorContasPagar = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
 
-    await paginaGerenciadorContasPagar.navegarParaPainel( 'li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
+    await paginaGerenciadorContasPagar.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
   });
 
   test.afterEach(async ({ page }, testInfo) => {
@@ -410,7 +436,7 @@ test.describe("Faturas vencidas", () => {
   });
 
   test("Deve validar o somatório da quantidade de faturas vencidas", async ({ page}) => {
-    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${url}/mk/WSMKCPCardsInfoFaturas.rule?`) ) {resolve(response) }})})
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.INFO_CARDS}`) ) {resolve(response) }})})
     await paginaGerenciadorContasPagar.validarSomatorioFaturasVencidas();
     const response = await responsePromise;
     expect(Servicos.checarRequisicao(response)).toBeTruthy();
