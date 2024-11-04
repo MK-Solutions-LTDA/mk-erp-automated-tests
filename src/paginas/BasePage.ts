@@ -66,7 +66,8 @@ export default class BasePage {
   }
 
   @step('Anexar arquivos')
-  async incluirArquivos() {
+  async incluirArquivos(tipo: Frame | null) {
+    if (!this.telaAtual) tipo;
     await this.telaAtual?.locator('input[type="file"]').first().setInputFiles([
       path.join(`${folderImagens}/cami.jpeg`),
       path.join(`${folderImagens}/carol.png`),
@@ -76,14 +77,15 @@ export default class BasePage {
   }
 
   @step("Adicionar anexos na fatura")
-  async anexarArquivos() {
+  async anexarArquivos(tipo: Frame | null) {
+    if (!this.telaAtual) tipo;
     await this.page.waitForTimeout(2000);
     await this.clicarBotao("button", "Pendentes");
     await this.page.waitForTimeout(2000);
     await this.telaAtual?.getByRole("button", { name: "Suspensas" }).click();
     await this.telaAtual?.getByRole("row", { name: /(\d{6})/gim }).getByRole("button").nth(2).click();
     await this.telaAtual?.getByRole("button", { name: "Anexos" }).click();
-    await this.incluirArquivos();
+    await this.incluirArquivos(tipo);
     await this.clicarBotao("button", "Salvar anexos");
   }
 
@@ -99,8 +101,20 @@ export default class BasePage {
         return null;
       }
     }
-
     this.telaAtual = frameAtual as Frame;
     return this.telaAtual;
+  }
+
+  @step('Navegar para a próxima página de resultados')
+  async navegarPaginaResultados(pagina: string, tipoTela: Frame | null) {
+    if (!this.telaAtual) tipoTela;
+    if (pagina === "ultima") {
+      if (await this.telaAtual?.locator('//button[normalize-space()="7"]').first().isVisible()) { await this.telaAtual?.locator('//button[normalize-space()="7"]').first().click() } 
+      else {
+        console.log('deu ruim e eu nao faco a menor ideia do pq')
+      }
+    } else {
+      await this.telaAtual?.getByRole("button", { name: pagina, exact: true }).click();
+    }
   }
 }

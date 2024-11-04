@@ -1,22 +1,25 @@
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import step from "../../../utilitarios/decorators";
-import { FinanceiroPage } from "../../FinanceiroPage";
+import BasePage from "../../BasePage";
+import { expect } from "@playwright/test";
+import Servicos from "../../../utilitarios/servicos";
+import { API } from "../../../utilitarios/api/financeiro/gerenciador_contas_receber/apimap";
 
 
-export class GerenciadorContasReceber extends FinanceiroPage {
+export class GerenciadorContasReceber extends BasePage {
 
     @step('Navegar para a tela de contas a receber')
     async navegarParaContasAReceberTela() {
-        await this.page.waitForLoadState('load');
-        const mainsystem = await this.mudarParaIframe('frame[name="mainsystem"]', this.page);
-        const mainform = await this.mudarParaIframe('iframe[name="mainform"]', mainsystem);
-        const financeiroAba = await this.mudarParaIframe('iframe[componenteaba="Financeiro - PainelCloseAbaPrincipal"]',mainform);
-        const mainform2 = await this.mudarParaIframe('iframe[name="mainform"]',financeiroAba);
-        const gerenciadorContas = await this.mudarParaIframe('iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]', mainform2);
-        await this.page.waitForTimeout(10 * 1000)
-        const mainform3 = await this.mudarParaIframe('iframe[name="mainform"]', gerenciadorContas);
-        this.telaAtual = await this.mudarParaIframe('iframe[src="/mk/mkcore/BillsToReceive/?sys=MK0"]', mainform3);
-        return this.telaAtual;
+      await this.page.waitForLoadState('load');
+      const mainsystem = await this.mudarParaIframe('frame[name="mainsystem"]', this.page);
+      const mainform = await this.mudarParaIframe('iframe[name="mainform"]', mainsystem);
+      const financeiroAba = await this.mudarParaIframe('iframe[componenteaba="Financeiro - PainelCloseAbaPrincipal"]',mainform);
+      const mainform2 = await this.mudarParaIframe('iframe[name="mainform"]',financeiroAba);
+      const gerenciadorContas = await this.mudarParaIframe('iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]', mainform2);
+      await this.page.waitForTimeout(10 * 1000)
+      const mainform3 = await this.mudarParaIframe('iframe[name="mainform"]', gerenciadorContas);
+      this.telaAtual = await this.mudarParaIframe('iframe[src="/mk/mkcore/BillsToReceive/?sys=MK0"]', mainform3);
+      return this.telaAtual;
     }
     
     @step('Excluir fatura')
@@ -32,7 +35,7 @@ export class GerenciadorContasReceber extends FinanceiroPage {
       await this.clicarBotao('button', 'Confirmar')
     }
 
-    @step('Liquidar fatura a receber')
+  @step('Liquidar fatura a receber')
   async liquidarFaturaAReceber(){
     if (!this.telaAtual) await this.navegarParaContasAReceberTela();
     await this.clicarBotao('button', 'Pendentes');
@@ -108,7 +111,7 @@ export class GerenciadorContasReceber extends FinanceiroPage {
   async gerarCobrancaPixFaturaAReceber() {
 
     if (!this.telaAtual) await this.navegarParaContasAReceberTela();
-    await this.telaAtual?.waitForLoadState('domcontentloaded');
+    await this.page.waitForTimeout(3 * 1000);
     await this.clicarBotao('button', 'Pendentes');
     await this.telaAtual?.getByText('Fatura', { exact: true }).click();
     await this.telaAtual?.getByText('Fatura', { exact: true }).click();
@@ -123,7 +126,7 @@ export class GerenciadorContasReceber extends FinanceiroPage {
     for (let i = 0; i < faturaIds!.length; i++) {
       await this.telaAtual?.getByRole('row', { name: faturaIds![i] }).getByRole('button').nth(3).click();
       await this.telaAtual?.getByRole('button', { name: 'Cobrança por Pix' }).first().click();
-      await this.telaAtual?.waitForTimeout(2 * 1000)
+      await this.telaAtual?.waitForTimeout(3 * 1000)
       const texto = await this.telaAtual?.getByText('Pague escaneando o QR Code').isVisible();
 
       switch (texto) {
@@ -417,7 +420,7 @@ export class GerenciadorContasReceber extends FinanceiroPage {
     await this.telaAtual?.locator('input[name="descricao"]').press('ControlOrMeta+a');
     await this.telaAtual?.locator('input[name="descricao"]').pressSequentially(faker.lorem.sentences());
     await this.telaAtual?.locator('button').filter({ hasText: 'Mensalidade' }).click();
-    await this.telaAtual?.getByLabel('01.00.00.00 Mensalidade').click();
+    await this.telaAtual?.getByLabel('Mensalidade').click();
     await this.telaAtual?.locator('button').filter({ hasText: 'Clique para selecionar' }).click();
     await this.telaAtual?.getByLabel('composição errada').click();
     await this.telaAtual?.getByRole('button', { name: 'Salvar' }).click();
@@ -532,8 +535,10 @@ export class GerenciadorContasReceber extends FinanceiroPage {
     await this.telaAtual?.getByRole('button', { name: 'Aplicar' }).click();
     await this.page.waitForTimeout(2500);
     const dataTable2 = await this.telaAtual?.getByRole('table').filter({has: this.telaAtual?.locator('tr')}).first().innerText();
+    console.log(dataTable2);
     const faturaIds = dataTable2?.match(/(\d{6})/gmi);
     const contas = [...new Set(faturaIds?.pop())];
+    console.log(contas);
     for (let i = 0; i < contas.length; i++) {
       await this.telaAtual?.getByRole('cell', { name: contas[i].toString() }).getByRole('checkbox').first().click();
     }
@@ -590,6 +595,127 @@ export class GerenciadorContasReceber extends FinanceiroPage {
     await this.telaAtual?.getByLabel('Categoria').uncheck();
     await this.telaAtual?.getByLabel('Vínculo').uncheck();
     await this.telaAtual?.getByLabel('Descrição').uncheck();
+    await this.telaAtual?.getByRole('button', { name: 'Aplicar' }).click();
+  }
+
+  @step('Gerar lote')
+  async gerarLote(){
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'E-mail' }).click();
+    await this.telaAtual?.getByText('Novo lote').click();
+    await this.telaAtual?.getByRole('button', { name: 'Imprimir boletos' }).click();
+    await this.telaAtual?.getByRole('combobox').first().click();
+    await this.telaAtual?.getByLabel('CEF TESTE').click();
+    await this.telaAtual?.locator('input[name="dataInicio"]').pressSequentially(faker.date.past().toLocaleDateString());
+    await this.telaAtual?.locator('input[name="dataFim"]').pressSequentially(faker.date.future().toLocaleDateString());
+    await this.telaAtual?.getByRole('button', { name: 'Confirmar' }).click();
+    const responsePromise = new Promise (async (resolve) => {this.page.on("response", (response) => { if (response.url().includes(`${API.NOVO_LOTE_FATURAS}`)) { return resolve(response) }})});
+    const response = await responsePromise;
+    expect(await Servicos.checarRequisicao(response)).toBeTruthy();
+    await this.telaAtual?.getByRole('button').first().click();
+    await this.telaAtual?.locator('html').click();
+  }
+
+  @step('Enviar Emails')
+  async enviarEmails(){
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.gerarLote();
+    await this.telaAtual?.locator('#sendEmailForm div').filter({ hasText: 'DataOperadorConta SMTPClique' }).getByRole('combobox').click();
+    await this.telaAtual?.getByLabel('Conta email funcionando').click();
+    await this.telaAtual?.getByLabel('Novo envio de e-mail em massa').locator('button').filter({ hasText: 'Clique para selecionar' }).click();
+    await this.telaAtual?.getByLabel('Faturas e docs. fiscais', { exact: true }).click();
+    await this.telaAtual?.locator('input[name="titulo"]').click();
+    await this.telaAtual?.locator('input[name="titulo"]').pressSequentially(faker.lorem.sentences());
+    await this.telaAtual?.locator('.ql-editor').click();
+    await this.telaAtual?.locator('.ql-editor').pressSequentially(faker.lorem.sentences());
+    await this.telaAtual?.getByRole('button', { name: 'Enviar' }).click();
+  }
+
+  @step('Imprimir emails em massa')
+  async imprimirEmailsMassa(){
+    await this.page.waitForTimeout(2000);
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.gerarLote();
+    await this.telaAtual?.getByRole('row', { name: 'Fatura Valor Vencimento' }).getByRole('checkbox').check();
+    await this.telaAtual?.getByRole('button', { name: 'Imprimir' }).nth(1).click();
+    await this.telaAtual?.getByLabel('Imprimir').getByText('Confirmar').click();
+  }
+
+  @step('Abrir lote de faturas')
+  async abrirLoteFaturas(){
+    await this.page.waitForTimeout(2000);
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'Impressão em massa', exact: true }).click();
+    await this.page.waitForTimeout(2000);
+    await this.telaAtual?.getByText('Situação').click();
+    await this.telaAtual?.getByText('Situação').click();
+    await this.telaAtual?.locator('td:nth-child(11)').first().click();
+    await this.telaAtual?.getByRole('button', { name: 'Lote de faturas' }).click();
+  
+  };
+
+  @step('Imprimir lote')
+  async imprimirLote(){
+    await this.page.waitForTimeout(2000);
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'Imprimir' }).nth(1).click();
+    await this.telaAtual?.getByText('Confirmar').click();
+  };
+
+  @step('Ignorar lote')
+  async ignorarLote(){
+    await this.page.waitForTimeout(2000);
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.page.waitForTimeout(2000);
+    await this.telaAtual?.locator('.\\!rounded-xl > tbody > tr > td').first().click();
+    await this.telaAtual?.getByRole('button', { name: 'Ignorar impressão' }).nth(1).click();
+    await this.telaAtual?.getByText('Confirmar').click();
+  };
+  
+  @step('Permitir lote')
+  async permitirLote(){
+    await this.page.waitForTimeout(2000);
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.locator('.\\!rounded-xl > tbody > tr > td').first().click();
+    await this.telaAtual?.getByRole('button', { name: 'Permitir impressão' }).nth(1).click();
+    await this.telaAtual?.getByText('Confirmar').click();
+  };
+  
+  @step('Encerrar lote')
+  async encerrarLote(){
+    await this.page.waitForTimeout(2000);
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'Encerrar lote' }).nth(1).click();
+    await this.telaAtual?.getByText('Confirmar').click();  
+  };
+  
+  @step('Paginar lote')
+  async paginarLote(){
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'E-mail', exact: true }).first().click();
+    await this.telaAtual?.getByRole('button', { name: '2', exact: true }).click();
+    await this.telaAtual?.getByRole('button', { name: '3', exact: true }).click();
+    await this.telaAtual?.getByRole('button', { name: '4', exact: true }).click();
+  };
+
+  @step('Fazer download dos emails na tela')
+  async fazerDownloadEmail(){
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'E-mail', exact: true }).first().click();
+    await this.telaAtual?.getByRole('button', { name: 'Baixar' }).nth(1).click();
+    await this.telaAtual?.getByRole('button', { name: 'PDF Baixar PDF' }).click();
+    await this.telaAtual?.getByLabel('Reimprimir').uncheck();
+    await this.telaAtual?.locator('#nomeTipo').uncheck();
+    await this.telaAtual?.getByRole('button', { name: 'Aplicar' }).click();
+  }
+
+  @step('Imprimir grade de emails')
+  async imprimirGradeEmails(){
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.telaAtual?.getByRole('button', { name: 'E-mail', exact: true }).first().click();
+    await this.telaAtual?.locator('.flex-1 > div:nth-child(3) > div > button:nth-child(2)').first().click();
+    await this.telaAtual?.getByLabel('Reimprimir').uncheck();
+    await this.telaAtual?.locator('#nomeTipo').uncheck();
     await this.telaAtual?.getByRole('button', { name: 'Aplicar' }).click();
   }
 }

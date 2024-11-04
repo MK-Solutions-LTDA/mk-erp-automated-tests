@@ -110,6 +110,7 @@ export class GerenciadorContasPagar extends BasePage {
   @step("Remover suspenção da fatura")
   async removerSuspencaoFatura() {
     if (!this.telaAtual) await this.navegarParaContasAPagarTela();
+    await this.page.waitForTimeout(2500);
     await this.clicarBotao("button", "Suspensas");
     await this.telaAtual?.getByRole("row", { name: /(\d{6})/gim }).getByRole("button").nth(2).click();
     await this.telaAtual?.getByRole("button", { name: "Remover suspensão" }).nth(1).click();
@@ -134,23 +135,25 @@ export class GerenciadorContasPagar extends BasePage {
     await this.clicarTexto("Ok");
   }
 
-
   @step("Alterar faturas em massa")
   async alteracaoFaturaEmMassa(tipoAlteracao: string, descricao: string) {
     if (!this.telaAtual) await this.navegarParaContasAPagarTela();
     switch (tipoAlteracao) {
       case "Suspender":
       case "Pagar":
+        await this.page.waitForTimeout(2500);
         await this.clicarBotao("button", "Pendentes");
         await this.telaAtual?.getByRole("row", { name: "Fatura Credor Descrição" }).getByRole("checkbox").click();
         await this.clicarBotao("button", /Alterar em massa \((\d+)\)/gim);
         break;
       case "Remover suspensão":
+        await this.page.waitForTimeout(3000);
         await this.clicarBotao("button", "Suspensas");
         await this.telaAtual?.getByRole("row", { name: "Fatura Credor Descrição" }).getByRole("checkbox").click();
         await this.clicarBotao("button", /Alterar em massa \((\d+)\)/gim);
         break;
       case "Estornar":
+        await this.page.waitForTimeout(2500);
         await this.clicarBotao("button", "Pagas");
         await this.telaAtual?.getByRole("row", { name: "Fatura Credor Descrição" }).getByRole("checkbox").click();
         await this.clicarBotao("button", /Alterar em massa \((\d+)\)/gim);
@@ -254,19 +257,6 @@ export class GerenciadorContasPagar extends BasePage {
     await this.clicarBotao("button", "Vencidas");
     await this.telaAtual?.getByRole("cell", { name: "Valor" }).click();
     await this.clicarBotao("button", "Somar");
-  }
-  
-  @step('Navegar para a próxima página de resultados')
-  async navegarPaginaResultados(pagina: string, tipoTela: Frame | null) {
-    if (!this.telaAtual) tipoTela;
-    if (pagina === "ultima") {
-      if (await this.telaAtual?.locator('//button[normalize-space()="7"]').first().isVisible()) { await this.telaAtual?.locator('//button[normalize-space()="7"]').first().click() } 
-      else {
-        console.log('deu ruim e eu nao faco a menor ideia do pq')
-      }
-    } else {
-      await this.telaAtual?.getByRole("button", { name: pagina, exact: true }).click();
-    }
   }
 
   @step('Preencher campo placeholder')

@@ -77,13 +77,13 @@ test.describe('Faturas', () => {
       });
     });
 
-    await paginaGerenciadorContasPagar.criarContaAPagar("#", "Rateio", "testeeee");
+    await paginaGerenciadorContasPagar.criarContaAPagar("#", "Rateio", "celular novo");
 
     await criarFaturaApi.then(async (response) => {
       const responseFatura = await Servicos.checarRequisicao(response);
-      const idFatura = responseFatura?.sucesso?.sucess?.match(/\s+(\d{6})/i)?.[0];
-      console.log(await idFatura);
-      if (idFatura != null || idFatura != undefined) { await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), true);
+      const idFatura = responseFatura?.sucesso?.sucess?.match(/\s+(\d{6})/i)?.[0].trim();
+      console.log(await idFatura.trim());
+      if (idFatura) { await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), true);
     }});
 
     const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.LIQUIDAR_FATURA}`)) {resolve(response)}})})
@@ -154,10 +154,9 @@ test.describe('Faturas', () => {
       const responseReturn = responseFatura.sucesso;
       const idFatura = responseReturn.match(/\s+(\d{6})/i)?.[0]!;
       console.log(idFatura);
-      if (!idFatura) { throw new Error("Não foi possível encontrar o ID da fatura")}
       if (idFatura != null || idFatura != undefined) { 
         await paginaGerenciadorContasPagar.liquidarFatura(idFatura, faker.finance.amount(), true);
-        await paginaGerenciadorContasPagar.estornarFatura("BB - Boleto",true,idFatura ); console.log("Fatura estornada com sucesso!")
+        await paginaGerenciadorContasPagar.estornarFatura("BB - Boleto",true,idFatura );
       }
     });
     const response = await responsePromise;
@@ -192,7 +191,7 @@ test.describe('Faturas', () => {
 
   test("Deve remover a suspenção de faturas em massa com sucesso", async ({page}) => {
     const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.SUSPENDER_FATURA_MASSA}`) ) {resolve(response); }})});
-
+    await page.waitForTimeout(2500);
     await paginaGerenciadorContasPagar.alteracaoFaturaEmMassa("Remover suspensão",faker.lorem.sentences());
 
     const response = await responsePromise;
@@ -213,8 +212,9 @@ test.describe('Faturas', () => {
   });
 
   test("Deve anexar imagens na fatura com sucesso", async ({ page }) => {
+    const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.INSERIR_ANEXO_FATURA}`)) {resolve(response)}})})
     await paginaGerenciadorContasPagar.anexarArquivos();
-    const response = await page.waitForResponse((response) => response.url().includes(`${API.INSERIR_ANEXO_FATURA}`));
+    const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });
 });

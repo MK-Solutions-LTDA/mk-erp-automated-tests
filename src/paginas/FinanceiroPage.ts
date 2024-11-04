@@ -4,6 +4,7 @@ import step from "../utilitarios/decorators";
 import { ItensMenu } from "../utilitarios/itens_submenu/financeiro/financeiro_submenus";
 import { DreGerencial } from "./subpaginas/financeiro/DreGerencial";
 import { GerenciadorContasPagar } from "./subpaginas/financeiro/GerenciadorContasPagar";
+import { GerenciadorContasReceber } from "./subpaginas/financeiro/GerenciadorContasReceber";
 
 export class FinanceiroPage extends BasePage {
   constructor(page: Page) {
@@ -38,8 +39,8 @@ export class FinanceiroPage extends BasePage {
     switch (tipoDePagina) {
       case ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR:
         return new GerenciadorContasPagar(this.page);
-      // case ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER:
-      //   return new GerenciadorContasReceber(this.page);
+      case ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER:
+        return new GerenciadorContasReceber(this.page);
       case ItensMenu.DRE_GERENCIAL:
         return new DreGerencial(this.page);
       default:
