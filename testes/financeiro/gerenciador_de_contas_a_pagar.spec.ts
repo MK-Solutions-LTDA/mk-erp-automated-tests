@@ -213,7 +213,7 @@ test.describe('Faturas', () => {
 
   test("Deve anexar imagens na fatura com sucesso", async ({ page }) => {
     const responsePromise = new Promise(async (resolve) => { page.on("response", (response) => { if (response.url().includes(`${API.INSERIR_ANEXO_FATURA}`)) {resolve(response)}})})
-    await paginaGerenciadorContasPagar.anexarArquivos();
+    await paginaGerenciadorContasPagar.anexarArquivos(await paginaGerenciadorContasPagar.navegarParaContasAPagarTela());
     const response = await responsePromise;
     expect(await Servicos.checarRequisicao(response)).toBeTruthy();
   });

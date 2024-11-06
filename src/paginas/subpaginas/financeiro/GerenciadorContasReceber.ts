@@ -8,32 +8,32 @@ import { API } from "../../../utilitarios/api/financeiro/gerenciador_contas_rece
 
 export class GerenciadorContasReceber extends BasePage {
 
-    @step('Navegar para a tela de contas a receber')
-    async navegarParaContasAReceberTela() {
-      await this.page.waitForLoadState('load');
-      const mainsystem = await this.mudarParaIframe('frame[name="mainsystem"]', this.page);
-      const mainform = await this.mudarParaIframe('iframe[name="mainform"]', mainsystem);
-      const financeiroAba = await this.mudarParaIframe('iframe[componenteaba="Financeiro - PainelCloseAbaPrincipal"]',mainform);
-      const mainform2 = await this.mudarParaIframe('iframe[name="mainform"]',financeiroAba);
-      const gerenciadorContas = await this.mudarParaIframe('iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]', mainform2);
-      await this.page.waitForTimeout(10 * 1000)
-      const mainform3 = await this.mudarParaIframe('iframe[name="mainform"]', gerenciadorContas);
-      this.telaAtual = await this.mudarParaIframe('iframe[src="/mk/mkcore/BillsToReceive/?sys=MK0"]', mainform3);
-      return this.telaAtual;
-    }
-    
-    @step('Excluir fatura')
-    async excluirContaAReceber() {
-      if (!this.telaAtual) await this.navegarParaContasAReceberTela();
-      await this.clicarBotao('button', 'Pendentes')
-      await this.telaAtual?.getByRole("row", { name: /(\d{6})/gim }).getByRole("button").nth(2).click();
-      await this.clicarBotao('button', 'Excluir')
-      await this.telaAtual?.locator("span").filter({ hasText: "Clique para selecionar" }).click();
-      await this.telaAtual?.getByLabel("Concorrência").first().click();
-      await this.telaAtual?.locator('input[name="descricaoExtra"]').click();
-      await this.telaAtual?.locator('input[name="descricaoExtra"]').pressSequentially(faker.lorem.sentences());
-      await this.clicarBotao('button', 'Confirmar')
-    }
+  @step('Navegar para a tela de contas a receber')
+  async navegarParaContasAReceberTela() {
+    await this.page.waitForLoadState('load');
+    const mainsystem = await this.mudarParaIframe('frame[name="mainsystem"]', this.page);
+    const mainform = await this.mudarParaIframe('iframe[name="mainform"]', mainsystem);
+    const financeiroAba = await this.mudarParaIframe('iframe[componenteaba="Financeiro - PainelCloseAbaPrincipal"]',mainform);
+    const mainform2 = await this.mudarParaIframe('iframe[name="mainform"]',financeiroAba);
+    const gerenciadorContas = await this.mudarParaIframe('iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]', mainform2);
+    await this.page.waitForTimeout(10 * 1000)
+    const mainform3 = await this.mudarParaIframe('iframe[name="mainform"]', gerenciadorContas);
+    this.telaAtual = await this.mudarParaIframe('iframe[src="/mk/mkcore/BillsToReceive/?sys=MK0"]', mainform3);
+    return this.telaAtual;
+  }
+  
+  @step('Excluir fatura')
+  async excluirContaAReceber() {
+    if (!this.telaAtual) await this.navegarParaContasAReceberTela();
+    await this.clicarBotao('button', 'Pendentes')
+    await this.telaAtual?.getByRole("row", { name: /(\d{6})/gim }).getByRole("button").nth(2).click();
+    await this.clicarBotao('button', 'Excluir')
+    await this.telaAtual?.locator("span").filter({ hasText: "Clique para selecionar" }).click();
+    await this.telaAtual?.getByLabel("Concorrência").first().click();
+    await this.telaAtual?.locator('input[name="descricaoExtra"]').click();
+    await this.telaAtual?.locator('input[name="descricaoExtra"]').pressSequentially(faker.lorem.sentences());
+    await this.clicarBotao('button', 'Confirmar')
+  }
 
   @step('Liquidar fatura a receber')
   async liquidarFaturaAReceber(){
@@ -712,7 +712,7 @@ export class GerenciadorContasReceber extends BasePage {
   @step('Imprimir grade de emails')
   async imprimirGradeEmails(){
     if (!this.telaAtual) await this.navegarParaContasAReceberTela();
-    await this.telaAtual?.getByRole('button', { name: 'E-Wmail', exact: true }).first().click();
+    await this.telaAtual?.getByRole('button', { name: 'E-mail', exact: true }).first().click();
     await this.telaAtual?.locator('.flex-1 > div:nth-child(3) > div > button:nth-child(2)').first().click();
     await this.telaAtual?.getByLabel('Reimprimir').uncheck();
     await this.telaAtual?.locator('#nomeTipo').uncheck();

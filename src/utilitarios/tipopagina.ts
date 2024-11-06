@@ -7,5 +7,6 @@ export enum TipoPagina {
 	GESTAO = 'li[id="1856707"]',
 	TECNICO = 'li[id="1511788"]',
 	INTEGRADORES = 'li[id="169073"]',
-	MAPS = 'li[id="1162115"]'
+	MAPS = 'li[id="1162115"]',
+	BOT = 'li[id="209457"]',
 }

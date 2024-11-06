@@ -3,6 +3,7 @@ import { TipoPagina } from '../utilitarios/TipoPagina';
 import BasePage from './BasePage';
 import { FinanceiroPage } from './FinanceiroPage';
 import { ConfigPage } from './ConfigPage';
+import BotPage from './BotPage';
 import step from '../utilitarios/decorators';
 
 export class MainPage extends BasePage {
@@ -27,6 +28,8 @@ export class MainPage extends BasePage {
         return new FinanceiroPage(this.page);
       case TipoPagina.CONFIGURACOES:
         return new ConfigPage(this.page);
+      case TipoPagina.BOT:
+        return new BotPage(this.page);
       default:
         throw new Error(`Tipo de página não suportado: ${tipoDePagina}`);
     }

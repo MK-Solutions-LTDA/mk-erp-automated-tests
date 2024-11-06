@@ -3,11 +3,13 @@ import { FinanceiroPage } from "../../paginas/FinanceiroPage";
 import { LoginPage } from "../../paginas/LoginPage";
 import { MainPage } from "../../paginas/MainPage";
 import { TipoPagina } from "../TipoPagina";
+import BotNovo from "../../paginas/subpaginas/bot/BotNovo";
 
 export const test = base.extend<{
   paginaLogin: LoginPage;
   paginaPrincipal: MainPage;
   paginaFinanceiro: FinanceiroPage;
+  paginaBotNovo: BotNovo;
 }>({
   
   paginaLogin: async ({ page }, use) => {
@@ -25,5 +27,13 @@ export const test = base.extend<{
     const paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     await use(paginaFinanceiro);
   },
-  
+
+  paginaBotNovo: async ({ paginaPrincipal }, use) => {
+    const paginaBot = await paginaPrincipal.irParaPagina(TipoPagina.BOT);
+    await use(paginaBot);
+    await paginaBot.limparConversa();
+  }
+
 });
+
+export const expect = base.expect;
