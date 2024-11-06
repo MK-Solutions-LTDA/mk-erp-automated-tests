@@ -712,7 +712,7 @@ export class GerenciadorContasReceber extends BasePage {
   @step('Imprimir grade de emails')
   async imprimirGradeEmails(){
     if (!this.telaAtual) await this.navegarParaContasAReceberTela();
-    await this.telaAtual?.getByRole('button', { name: 'E-mail', exact: true }).first().click();
+    await this.telaAtual?.getByRole('button', { name: 'E-Wmail', exact: true }).first().click();
     await this.telaAtual?.locator('.flex-1 > div:nth-child(3) > div > button:nth-child(2)').first().click();
     await this.telaAtual?.getByLabel('Reimprimir').uncheck();
     await this.telaAtual?.locator('#nomeTipo').uncheck();
