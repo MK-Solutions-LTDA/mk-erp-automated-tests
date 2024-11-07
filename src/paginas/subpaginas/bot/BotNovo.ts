@@ -1,5 +1,6 @@
 import { type Locator, Page } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
+import { expect } from "../../../utilitarios/fixtures/base";
 
 export default class BotNovo {
     
@@ -22,8 +23,12 @@ export default class BotNovo {
     botaoNovaConversa: Locator;
     botaoConversaOpcoes: Locator;
     botaoConversaOpcoesEncerrarAtendimento: Locator;
+    botaoAcoesDentroConversa: Locator;
+    botaoAcoesDentroConversaEnviarSegundaVia: Locator;
     confirmarEncerramentoConversa: Locator;
+    checkboxSelecionarPrimeiraFatura: Locator;
     encerrarConversaDefinitivamente: Locator;
+    botaoEnviarSegundaViaFaturas: Locator;
 
     constructor(page: Page) {
 
@@ -48,7 +53,11 @@ export default class BotNovo {
         this.botaoConversaOpcoesEncerrarAtendimento = this.page.getByText('Encerrar atendimento' );
         this.confirmarEncerramentoConversa = this.page.getByLabel('Estou ciente que esta ação nã')
         this.encerrarConversaDefinitivamente = this.page.getByRole('button', { name: 'Encerrar' });
-        this.botaoNovaConversa = this.page.getByRole('button', { name: 'Nova conversa' });
+        this.botaoNovaConversa = this.page.locator('xpath=//div[@id="radix-:r11:-content-clients"]//button[1]').nth(0);
+        this.botaoAcoesDentroConversa = this.page.getByRole('button', { name: 'Ações', exact: true });
+        this.botaoAcoesDentroConversaEnviarSegundaVia = this.page.getByRole('button', { name: 'Enviar 2ª via de fatura' }).first();
+        this.checkboxSelecionarPrimeiraFatura = this.page.locator('td').first()
+        this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar (1)' });
     };
 
     @step('Limpar conversa')
@@ -82,12 +91,15 @@ export default class BotNovo {
 
     @step('Acessar conversa')
     async acessarConversa() {
-        await this.page.getByRole('tab', { name: 'T Whatsapp Teste Caroline' }).click();
+        await this.page.getByRole('tab', { name: 'T Whatsapp Teste Caroline' }).first().click();
     }
 
     @step('Enviar anexo')
     async enviarAnexo() {
-        await this.page.getByRole('button', { name: 'Ações'}).click();
-        await this.page.getByRole('button', { name: 'Enviar 2ª via de fatura' }).first().click();
+        await this.botaoAcoesDentroConversa.click();
+        await this.botaoAcoesDentroConversaEnviarSegundaVia.click();
+        await this.checkboxSelecionarPrimeiraFatura.click();
+        await this.botaoEnviarSegundaViaFaturas.click();
+        await expect(this.page.locator('div').filter({ hasText: /^Sucesso!Segunda via enviada com sucesso!$/ }).nth(2)).toBeVisible();
     }
 }

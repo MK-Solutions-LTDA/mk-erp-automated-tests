@@ -40,6 +40,9 @@ export const test = base.extend<{
     await newPage.close();
     await context.close();
   }
+
+  // paginafinanceirobot: async ({ paginaFinanceiro }, use) => {})
+
 });
 
 export const expect = base.expect;

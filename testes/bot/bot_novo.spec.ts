@@ -11,9 +11,3 @@ test.describe('Ações', () => {
     });
     
 });
-
-test.describe('api', () => {
-
-    test('testar api de envio', async ({ page }) => {});
-
-})
