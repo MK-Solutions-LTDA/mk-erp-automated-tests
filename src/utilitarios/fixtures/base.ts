@@ -10,6 +10,7 @@ export const test = base.extend<{
   paginaPrincipal: MainPage;
   paginaFinanceiro: FinanceiroPage;
   paginaBotNovo: BotNovo;
+  // paginafinanceirobot: FinanceiroBotPage;
 }>({
   
   paginaLogin: async ({ page }, use) => {
@@ -28,12 +29,17 @@ export const test = base.extend<{
     await use(paginaFinanceiro);
   },
 
-  paginaBotNovo: async ({ paginaPrincipal }, use) => {
-    const paginaBot = await paginaPrincipal.irParaPagina(TipoPagina.BOT);
-    await use(paginaBot);
-    await paginaBot.limparConversa();
+  paginaBotNovo: async ({ paginaPrincipal, context }, use) => {
+    const pagePromise = context.waitForEvent('page');
+    await paginaPrincipal.irParaPagina(TipoPagina.BOT);
+    const newPage = await pagePromise;
+    const paginaBotNovo = new BotNovo(newPage);
+    await use(paginaBotNovo);
+    await newPage.waitForLoadState('load');
+    await paginaBotNovo.limparConversa();
+    await newPage.close();
+    await context.close();
   }
-
 });
 
 export const expect = base.expect;

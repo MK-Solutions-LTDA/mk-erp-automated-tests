@@ -87,7 +87,7 @@ export default class BotNovo {
 
     @step('Enviar anexo')
     async enviarAnexo() {
-        await this.page.getByRole('button', { name: 'Ações' }).click();
-        await this.page.getByRole('button', { name: 'Enviar 2ª via de fatura' }).click();
+        await this.page.getByRole('button', { name: 'Ações'}).click();
+        await this.page.getByRole('button', { name: 'Enviar 2ª via de fatura' }).first().click();
     }
 }
