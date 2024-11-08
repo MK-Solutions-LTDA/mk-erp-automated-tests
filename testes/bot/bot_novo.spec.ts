@@ -25,4 +25,24 @@ test.describe('Ações', () => {
         await paginaBotNovo.editarRespostaPadrao();
     });
 
+
+    test('Criar resposta padrão', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await page.waitForTimeout(2000);
+        await paginaBotNovo.acessarConversa();
+        await page.waitForTimeout(2000);
+        await paginaBotNovo.criarResposta();
+    });
+});
+
+test.describe('Opções', () => {
+    test('Redefinir contato identificado', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await page.waitForTimeout(2000);
+        await paginaBotNovo.acessarConversa();
+        await page.waitForTimeout(2000);
+        await paginaBotNovo.redefinirContato();
+    });
 });
