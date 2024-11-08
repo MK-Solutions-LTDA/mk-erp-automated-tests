@@ -1,13 +1,24 @@
-import { test, expect } from "../../src/utilitarios/fixtures/base";
+import { test } from "../../src/utilitarios/fixtures/base";
 
 test.describe('Ações', () => {
-    test('Enviar anexo de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+    test('Enviar um anexo de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
         await page.waitForLoadState('load')
         await paginaBotNovo.abrirNovaConversa();
         await page.waitForTimeout(2000);
-        await paginaBotNovo.acessarConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAnexo(2);
+    });
+
+    test('Enviar dois anexos de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
         await page.waitForTimeout(2000);
-        await paginaBotNovo.enviarAnexo();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAnexo(3);
     });
     
+    test('Resposta padrão - editar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        
+    });
+
 });

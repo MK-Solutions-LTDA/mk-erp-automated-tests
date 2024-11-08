@@ -26,9 +26,13 @@ export default class BotNovo {
     botaoAcoesDentroConversa: Locator;
     botaoAcoesDentroConversaEnviarSegundaVia: Locator;
     confirmarEncerramentoConversa: Locator;
-    checkboxSelecionarPrimeiraFatura: Locator;
     encerrarConversaDefinitivamente: Locator;
     botaoEnviarSegundaViaFaturas: Locator;
+    toastDeSucesso: Locator;
+    campoDePesquisaDePessoaNovaConversa: Locator;
+    abaPrimeiraConversaDisponivel: Locator;
+    selecionarPrimeiraOpcaoNovaConversa: Locator;
+    botaoIniciarChat: Locator;
 
     constructor(page: Page) {
 
@@ -48,7 +52,6 @@ export default class BotNovo {
         this.buscarOperadores = this.page.getByRole('main').getByRole('combobox').nth(3);
 
         this.exportarCSV = this.page.getByRole('button', { name: 'Exportar CSV' });
-
         this.botaoConversaOpcoes = this.page.getByRole('button', { name: 'Opções' });
         this.botaoConversaOpcoesEncerrarAtendimento = this.page.getByText('Encerrar atendimento' );
         this.confirmarEncerramentoConversa = this.page.getByLabel('Estou ciente que esta ação nã')
@@ -56,8 +59,13 @@ export default class BotNovo {
         this.botaoNovaConversa = this.page.locator('xpath=//div[@id="radix-:r11:-content-clients"]//button[1]').nth(0);
         this.botaoAcoesDentroConversa = this.page.getByRole('button', { name: 'Ações', exact: true });
         this.botaoAcoesDentroConversaEnviarSegundaVia = this.page.getByRole('button', { name: 'Enviar 2ª via de fatura' }).first();
-        this.checkboxSelecionarPrimeiraFatura = this.page.locator('td').first()
-        this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar (1)' });
+        this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar' }).first();
+        this.toastDeSucesso = this.page.locator('div').filter({ hasText: /^Sucesso!Segundas vias enviadas com sucesso!$/ }).nth(2)
+        ;
+        this.campoDePesquisaDePessoaNovaConversa = this.page.getByPlaceholder('Clique para buscar por código');
+        this.abaPrimeiraConversaDisponivel = this.page.getByRole('tab', { name: 'Whatsapp' }).first();
+        this.selecionarPrimeiraOpcaoNovaConversa = this.page.locator('td').first();
+        this.botaoIniciarChat = this.page.getByRole('button', { name: 'Iniciar chat' }).first();
     };
 
     @step('Limpar conversa')
@@ -78,28 +86,37 @@ export default class BotNovo {
 
     @step('Pesquisar pessoa conversa')
     async pesquisarPessoaConversa(cliente: string) {
-        await this.page.getByPlaceholder('Clique para buscar por código').click();
-        await this.page.getByPlaceholder('Clique para buscar por código').fill(cliente);
+        await this.campoDePesquisaDePessoaNovaConversa.click();
+        await this.campoDePesquisaDePessoaNovaConversa.fill(cliente);
         await this.page.getByText(cliente).first().click();
     }
 
     @step('Iniciar conversa')
     async iniciarConversa() {
-        await this.page.locator('td').first().click();
-        await this.page.getByRole('button', { name: 'Iniciar chat' }).click();
+        await this.selecionarPrimeiraOpcaoNovaConversa.click();
+        await this.botaoIniciarChat.click();
     }
 
     @step('Acessar conversa')
-    async acessarConversa() {
-        await this.page.getByRole('tab', { name: 'T Whatsapp Teste Caroline' }).first().click();
+    async acessarAbaPrimeiraConversa() {
+        this.abaPrimeiraConversaDisponivel.click();
     }
 
     @step('Enviar anexo')
-    async enviarAnexo() {
+    async enviarAnexo(numeroDeFaturas: number) {
         await this.botaoAcoesDentroConversa.click();
         await this.botaoAcoesDentroConversaEnviarSegundaVia.click();
-        await this.checkboxSelecionarPrimeiraFatura.click();
+        await this.clicarFaturas(numeroDeFaturas);
         await this.botaoEnviarSegundaViaFaturas.click();
-        await expect(this.page.locator('div').filter({ hasText: /^Sucesso!Segunda via enviada com sucesso!$/ }).nth(2)).toBeVisible();
+        await expect(this.toastDeSucesso).toBeAttached();
     }
+
+    @step('Clicar nas faturas dentro da conversa')
+    async clicarFaturas(numeroDeFaturas: number) {
+        for (let i = 1; i < numeroDeFaturas; i++) {
+            console.log(i);
+            await this.page.locator(`tr:nth-child(${i}) > td`).first().click();
+        }  
+    }
+
 }
