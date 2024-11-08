@@ -119,4 +119,21 @@ export default class BotNovo {
         }  
     }
 
+    @step('Editar resposta padrão')
+    async editarRespostaPadrao() {
+        await this.page.getByRole('button', { name: 'Respostas padrão' }).click();
+        await this.page.getByRole('button', { name: 'teste', exact: true }).click();
+        await this.page.getByLabel('teste', { exact: true }).getByRole('button').first().click();
+
+        await this.page.getByPlaceholder('Clique para preencher').click();
+        await this.page.getByPlaceholder('Clique para preencher').press('ControlOrMeta+a');
+        await this.page.getByPlaceholder('Clique para preencher').fill('teste');
+
+        await this.page.getByLabel('Mensagem *').click();
+        await this.page.getByLabel('Mensagem *').press('ControlOrMeta+a');
+        await this.page.getByLabel('Mensagem *').pressSequentially('receba pai e o melhor do mundo luva de pedreiro bora bill amostradinho');
+        
+        await this.page.getByRole('button', { name: 'Salvar' }).click();
+    }
+
 }

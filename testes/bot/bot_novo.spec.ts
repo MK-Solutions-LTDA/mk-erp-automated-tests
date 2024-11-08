@@ -18,7 +18,11 @@ test.describe('Ações', () => {
     });
     
     test('Resposta padrão - editar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await page.waitForTimeout(2000);
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.editarRespostaPadrao();
     });
 
 });
