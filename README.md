@@ -25,10 +25,11 @@ O objetivo deste projeto é automatizar a validação de funcionalidades crític
    cd nome-projeto
    ```
 3. Instale as dependências:
-  ```bash
-  npm install
-  ```
-  ou
-  ```bash
-  yarn install
-  ```
+     ```bash
+     npm install
+     ```
+     ou
+   
+     ```bash
+     yarn install
+     ```
