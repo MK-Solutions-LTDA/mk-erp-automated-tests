@@ -29,6 +29,7 @@ export default class BotNovo {
     encerrarConversaDefinitivamente: Locator;
     botaoEnviarSegundaViaFaturas: Locator;
     toastDeSucesso: Locator;
+    botaoExcluirRespostaPadrao: Locator;
     campoDePesquisaDePessoaNovaConversa: Locator;
     abaPrimeiraConversaDisponivel: Locator;
     selecionarPrimeiraOpcaoNovaConversa: Locator;
@@ -43,6 +44,11 @@ export default class BotNovo {
     botaoConversaOpcoesRedefinirClienteBuscarCliente: Locator;
     botaoConversaOpcoesRedefinirClienteSalvar: Locator;
     botaoConversaOpcoesRedefinirClienteSalvarConfirma: Locator;
+    campoDePesquisaBuscarPorCodigo: Locator;
+    toastDeSucessoContratoRedefinido: Locator;
+    toastDeSucessoRespostaPadraoExcluida: Locator;
+    toastDeSucessoRespostaPadraoCriada: Locator;
+    botaoFecharModal: Locator;
 
     constructor(page: Page) {
 
@@ -70,8 +76,7 @@ export default class BotNovo {
         this.botaoAcoesDentroConversa = this.page.getByRole('button', { name: 'Ações', exact: true });
         this.botaoAcoesDentroConversaEnviarSegundaVia = this.page.getByRole('button', { name: 'Enviar 2ª via de fatura' }).first();
         this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar' }).first();
-        this.toastDeSucesso = this.page.locator('div').filter({ hasText: /^Sucesso!Segundas vias enviadas com sucesso!$/ }).nth(2)
-        ;
+        this.toastDeSucesso = this.page.locator('div').filter({ hasText: /^Sucesso!Segundas vias enviadas com sucesso!$/ }).nth(2);
         this.campoDePesquisaDePessoaNovaConversa = this.page.getByPlaceholder('Clique para buscar por código');
         this.abaPrimeiraConversaDisponivel = this.page.getByRole('tab', { name: 'Whatsapp' }).first();
         this.selecionarPrimeiraOpcaoNovaConversa = this.page.locator('td').first();
@@ -87,6 +92,12 @@ export default class BotNovo {
         this.botaoConversaOpcoesRedefinirClienteBuscarCliente = this.page.getByPlaceholder('Clique para buscar por código');
         this.botaoConversaOpcoesRedefinirClienteSalvar = this.page.getByRole('button', { name: 'Redefinir cliente' });
         this.botaoConversaOpcoesRedefinirClienteSalvarConfirma = this.page.getByRole('button', { name: 'Confirmar' });
+        this.campoDePesquisaBuscarPorCodigo = this.page.getByPlaceholder('Clique para buscar por código').first()
+        this.toastDeSucessoContratoRedefinido = this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2);
+        this.toastDeSucessoRespostaPadraoExcluida = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão excluída com sucesso!$/ }).nth(2);
+        this.botaoExcluirRespostaPadrao = this.page.getByRole('button', { name: 'Excluir' });
+        this.toastDeSucessoRespostaPadraoCriada = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão criada com sucesso!$/ }).nth(2);
+        this.botaoFecharModal = this.page.locator('xpath=//button[@class="w-12 h-12 bg-slate-200 rounded-full absolute -top-6 -right-6 dark:!bg-[#F1FFF7] dark:text-[#253339]"]')
     };
 
     @step('Limpar conversa')
@@ -141,14 +152,14 @@ export default class BotNovo {
     }
 
     @step('Editar resposta padrão')
-    async editarRespostaPadrao() {
-        await this.page.getByRole('button', { name: 'Respostas padrão' }).click();
-        await this.page.getByRole('button', { name: 'teste', exact: true }).click();
-        await this.page.getByLabel('teste', { exact: true }).getByRole('button').first().click();
+    async editarRespostaPadrao(nomeRespostaPadrao: string) {
+        await this.botaoAcoesDentroConversaRespostasPadrao.click();
+        await this.page.getByRole('button', { name: nomeRespostaPadrao, exact: true }).click();
+        await this.page.getByLabel(nomeRespostaPadrao, { exact: true }).getByRole('button').first().click();
 
         await this.page.getByPlaceholder('Clique para preencher').click();
         await this.page.getByPlaceholder('Clique para preencher').press('ControlOrMeta+a');
-        await this.page.getByPlaceholder('Clique para preencher').fill('teste');
+        await this.page.getByPlaceholder('Clique para preencher').pressSequentially('teste');
 
         await this.page.getByLabel('Mensagem *').click();
         await this.page.getByLabel('Mensagem *').press('ControlOrMeta+a');
@@ -159,17 +170,30 @@ export default class BotNovo {
 
 
     @step('Criar resposta padrão')
-    async criarResposta() {
+    async criarRespostaPadrao(nomeRespostaPadrao: string) {
         await this.botaoAcoesDentroConversa.click();
         await this.botaoAcoesDentroConversaRespostasPadrao.click();
         await this.botaoAcoesDentroConversaRespostasPadraoCriar.click();
         await this.cadastroGrupoRespostaPadrao.click();
-        await this.cadastroGrupoRespostaPadrao.pressSequentially('Teste automação');
+        await this.cadastroGrupoRespostaPadrao.pressSequentially(nomeRespostaPadrao);
         await this.cadastroMensagemRespostaPadrao.click();
         await this.cadastroMensagemRespostaPadrao.pressSequentially('Olá #nome! Este é um teste de resposta padrão com acentuação, coringa e emoji 😉😊💚🥰💛😅. Você está recebendo seu protocolo que é: #protocolo.');
         await this.botaosalvarRespostaPadrao.click();
-        await expect(this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão criada com sucesso!$/ }).nth(2)).toBeVisible();
+        await expect(this.toastDeSucessoRespostaPadraoCriada).toBeVisible();
         //await this.botaoFecharMenuRespostasPadrao.click();
+    }
+
+    @step('Excluir resposta padrão')
+    async excluirRespostaPadrao(nomeRespostaPadrao: string) {
+        await this.procurarRespostaPadrao(nomeRespostaPadrao);
+        await this.botaoExcluirRespostaPadrao.click();
+        await expect(this.toastDeSucessoRespostaPadraoExcluida).toBeVisible();
+    }
+
+    @step('Procurar resposta padrão')
+    async procurarRespostaPadrao(nomeRespostaPadrao: string) {
+        await this.page.getByRole('button', { name: nomeRespostaPadrao }).click();
+        await this.page.getByLabel(nomeRespostaPadrao).getByRole('button').nth(1).click();
     }
 
     @step('Redefinir contato já identificado')
@@ -177,20 +201,20 @@ export default class BotNovo {
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
         await this.botaoConversaOpcoesRedefinirClienteBuscarCliente.click();
-        await this.page.getByPlaceholder('Clique paraa buscar por código').click();
-        await this.page.getByPlaceholder('Clique para buscar por código').fill('teste banco de dados');
+        await this.campoDePesquisaBuscarPorCodigo.click();
+        await this.campoDePesquisaBuscarPorCodigo.pressSequentially('teste banco de dados');
         await this.page.getByText('teste banco dados').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
-        await expect(this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2)).toBeVisible();
+        await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
         await this.botaoConversaOpcoesRedefinirClienteBuscarCliente.click();
-        await this.page.getByPlaceholder('Clique para buscar por código').click();
-        await this.page.getByPlaceholder('Clique para buscar por código').fill('teste caroline');
+        await this.campoDePesquisaBuscarPorCodigo.click();
+        await this.campoDePesquisaBuscarPorCodigo.pressSequentially('teste caroline');
         await this.page.getByText('teste caroline').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
-        await expect(this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2)).toBeVisible();
+        await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
     }
 }
