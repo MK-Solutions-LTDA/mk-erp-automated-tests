@@ -12,12 +12,7 @@ export default defineConfig({
   //   video: {
   //     mode: "on",
   //     size: { width: 1920, height: 1080 }
-  //   },
-    // launchOptions: {
-    //   args: ["--start-maximized"],
-    //   slowMo: 5,
-    // },
-    
+  //   },  
   //   screenshot: "on",
   },
 
@@ -27,8 +22,11 @@ export default defineConfig({
       use: {
         // ...devices["Desktop Chrome"],
         // channel: 'chrome',
-        // viewport: { width: 1920, height: 1080 },
-        // viewport: { width: 1920, height: 1080 },
+        // launchOptions: {
+        //   args: ["--start-maximized"],
+        //   // slowMo: 5,
+        // },
+        viewport: { width: 1920, height: 945 },
       },
     },
   ],

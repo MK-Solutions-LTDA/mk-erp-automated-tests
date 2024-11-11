@@ -49,4 +49,11 @@ test.describe('Opções', () => {
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.redefinirContato();
     });
+
+    test('Convidar um operador com o status dispoível para a conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.convidarOperadorParaConversa('caroline');
+    })
 });
