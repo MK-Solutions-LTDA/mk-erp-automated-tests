@@ -87,7 +87,7 @@ export default class BotNovo {
         this.botaosalvarRespostaPadrao = this.page.getByRole('button', { name: 'Salvar' });
         this.cadastroGrupoRespostaPadrao = this.page.getByPlaceholder('Clique para preencher');
         this.cadastroMensagemRespostaPadrao = this.page.getByLabel('Mensagem *');
-        this.botaoFecharMenuRespostasPadrao = this.page.locator('[id="radix-\\:rov\\:"] > .w-12').nth(0);
+        //this.botaoFecharMenuRespostasPadrao = this.page.locator('[id="radix-\\:rov\\:"] > .w-12').nth(0);
         this.botaoConversaOpcoesRedefinirCliente = this.page.getByText('Redefinir cliente');
         this.botaoConversaOpcoesRedefinirClienteBuscarCliente = this.page.getByPlaceholder('Clique para buscar por código');
         this.botaoConversaOpcoesRedefinirClienteSalvar = this.page.getByRole('button', { name: 'Redefinir cliente' });
@@ -180,7 +180,7 @@ export default class BotNovo {
         await this.cadastroMensagemRespostaPadrao.pressSequentially('Olá #nome! Este é um teste de resposta padrão com acentuação, coringa e emoji 😉😊💚🥰💛😅. Você está recebendo seu protocolo que é: #protocolo.');
         await this.botaosalvarRespostaPadrao.click();
         await expect(this.toastDeSucessoRespostaPadraoCriada).toBeVisible();
-        //await this.botaoFecharMenuRespostasPadrao.click();
+        await this.botaoFecharModal.click();
     }
 
     @step('Excluir resposta padrão')
