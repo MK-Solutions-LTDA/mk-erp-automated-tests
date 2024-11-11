@@ -25,7 +25,7 @@ export default class BotNovo {
     botaoConversaOpcoesEncerrarAtendimento: Locator;
     botaoAcoesDentroConversa: Locator;
     botaoAcoesDentroConversaEnviarSegundaVia: Locator;
-    confirmarEncerramentoConversa: Locator;
+    confirmarModalConversa: Locator;
     encerrarConversaDefinitivamente: Locator;
     botaoEnviarSegundaViaFaturas: Locator;
     toastDeSucesso: Locator;
@@ -44,6 +44,7 @@ export default class BotNovo {
     botaoConversaOpcoesRedefinirClienteBuscarCliente: Locator;
     botaoConversaOpcoesRedefinirClienteSalvar: Locator;
     botaoConversaOpcoesConvidarOperador: Locator;
+    botaoConversaOpcoesTransferirAtendimentoSetor: Locator;
     botaoConversaConfirmarConvite: Locator;
     botaoConversaOpcoesRedefinirClienteSalvarConfirma: Locator;
     campoDePesquisaBuscarPorCodigo: Locator;
@@ -52,7 +53,11 @@ export default class BotNovo {
     toastDeSucessoRespostaPadraoCriada: Locator;
     toastDeSucessoRespostaPadraoEditada: Locator;
     toastDeSucessoConviteOperador: Locator;
+    toastDeSucessoTransferenciaSetor: Locator;
+    toastDeSucessoDevolverConversaParaFila: Locator;
     botaoFecharModal: Locator;
+    botaoConfirmar: Locator;
+    botaoConversaOpcoesDevolverParaFila: Locator;
 
     constructor(page: Page) {
 
@@ -74,7 +79,7 @@ export default class BotNovo {
         this.exportarCSV = this.page.getByRole('button', { name: 'Exportar CSV' });
         this.botaoConversaOpcoes = this.page.getByRole('button', { name: 'Opções' });
         this.botaoConversaOpcoesEncerrarAtendimento = this.page.getByText('Encerrar atendimento');
-        this.confirmarEncerramentoConversa = this.page.getByLabel('Estou ciente que esta ação nã')
+        this.confirmarModalConversa = this.page.getByLabel('Estou ciente que esta ação nã')
         this.encerrarConversaDefinitivamente = this.page.getByRole('button', { name: 'Encerrar' });
         this.botaoNovaConversa = this.page.locator('xpath=//div[@id="radix-:r11:-content-clients"]//button[1]').nth(0);
         this.botaoAcoesDentroConversa = this.page.getByRole('button', { name: 'Ações', exact: true });
@@ -85,7 +90,7 @@ export default class BotNovo {
         this.abaPrimeiraConversaDisponivel = this.page.getByRole('tab', { name: 'Whatsapp' }).first();
         this.selecionarPrimeiraOpcao = this.page.locator('td').first();
         this.botaoIniciarChat = this.page.getByRole('button', { name: 'Iniciar chat' }).first();
-        this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar (1)' });
+        this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar' }).first();
         this.botaoAcoesDentroConversaRespostasPadrao = this.page.getByRole('button', { name: 'Respostas Padrão' });
         this.botaoAcoesDentroConversaRespostasPadraoCriar = this.page.getByRole('button', { name: 'clique aqui' });
         this.botaosalvarRespostaPadrao = this.page.getByRole('button', { name: 'Salvar' });
@@ -105,13 +110,18 @@ export default class BotNovo {
         this.botaoConversaOpcoesConvidarOperador = this.page.getByRole('button', { name: 'Convidar p/ o chat' });
         this.botaoConversaConfirmarConvite = page.getByRole('button', { name: 'Convidar' });
         this.toastDeSucessoConviteOperador = this.page.locator('div').filter({ hasText: /^Sucesso!Convite enviado com sucesso!$/ }).nth(2);
+        this.botaoConversaOpcoesTransferirAtendimentoSetor = this.page.getByText('Transferir p/ setor');
+        this.toastDeSucessoTransferenciaSetor = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado transferido para o setor com sucesso!$/ }).nth(2);
+        this.toastDeSucessoDevolverConversaParaFila = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado devolvido para a fila com sucesso!$/ }).nth(2);
+        this.botaoConfirmar = this.page.getByRole('button', { name: 'Confirmar' });
+        this.botaoConversaOpcoesDevolverParaFila = this.page.getByRole('button', { name: 'Devolver para a fila' });
     };
 
     @step('Limpar conversa')
     async limparConversa() {
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesEncerrarAtendimento.click();
-        await this.confirmarEncerramentoConversa.click();
+        await this.confirmarModalConversa.click();
         await this.encerrarConversaDefinitivamente.click();
     }
 
@@ -147,7 +157,7 @@ export default class BotNovo {
         await this.botaoAcoesDentroConversaEnviarSegundaVia.click();
         await this.clicarFaturas(numeroDeFaturas);
         await this.botaoEnviarSegundaViaFaturas.click();
-        await expect(this.toastDeSucesso).toBeAttached();
+        await expect(this.toastDeSucesso).toBeVisible();
     }
 
     @step('Clicar nas faturas dentro da conversa')
@@ -160,7 +170,6 @@ export default class BotNovo {
 
     @step('Editar resposta padrão')
     async editarRespostaPadrao(nomeRespostaPadrao: string) {
-        await this.botaoAcoesDentroConversaRespostasPadrao.click();
         await this.page.getByRole('button', { name: nomeRespostaPadrao, exact: true }).click();
         await this.page.getByLabel(nomeRespostaPadrao, { exact: true }).getByRole('button').first().click();
 
@@ -232,5 +241,27 @@ export default class BotNovo {
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
         await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
+    }
+    
+    @step('Transferir para setor')
+    async transferirConversaParaSetor(setor: string, temOperador: boolean) {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoConversaOpcoesTransferirAtendimentoSetor.click();
+        if (temOperador) {
+            await this.page.getByRole('row', { name: setor }).getByRole('cell').first().click();
+        } else {
+            await this.page.getByRole('row', { name: setor }).getByRole('cell').first().click();
+        }
+        await this.page.getByRole('button', { name: 'Transferir atendimento' }).click();
+        await expect(this.toastDeSucessoTransferenciaSetor).toBeVisible();
+    }
+
+    @step('Devolver conversa para a fila')
+    async devolverConversaParaFila() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoConversaOpcoesDevolverParaFila.click();
+        await this.confirmarModalConversa.click();
+        await this.botaoConfirmar.click();
+        await expect(this.toastDeSucessoDevolverConversaParaFila).toBeVisible();  
     }
 }

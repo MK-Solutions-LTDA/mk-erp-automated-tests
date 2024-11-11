@@ -23,7 +23,7 @@ test.describe('Ações', () => {
         await paginaBotNovo.botaoFecharModal.click();
     });
     
-    test('Resposta padrão - editar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+    test('Resposta padrão - Editar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
         await page.waitForLoadState('load')
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
@@ -32,7 +32,7 @@ test.describe('Ações', () => {
         await paginaBotNovo.botaoFecharModal.click();
     });
 
-    test('Resposta padrão - excluir', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+    test('Resposta padrão - Excluir', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
         await page.waitForLoadState('load')
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
@@ -56,4 +56,35 @@ test.describe('Opções', () => {
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.convidarOperadorParaConversa('caroline');
     })
+
+    test('Transferir a conversa para um outro setor', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.transferirConversaParaSetor('Atendimento ao Cliente', true);
+    });
+    test('Devolver conversa para a fila', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.devolverConversaParaFila();
+    });
+
+    test('Acessar duas contas simultaneamente', async ({ 
+        paginaLogin, 
+        paginaPrincipal, 
+        paginaBotNovo, 
+        paginaLogin2, 
+        paginaPrincipal2, 
+        paginaBotNovo2, 
+        page 
+    }) => {
+
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo2.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo2.acessarAbaPrimeiraConversa();
+    });
+
 });
