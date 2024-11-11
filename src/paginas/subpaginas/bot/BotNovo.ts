@@ -76,7 +76,6 @@ export default class BotNovo {
         this.abaPrimeiraConversaDisponivel = this.page.getByRole('tab', { name: 'Whatsapp' }).first();
         this.selecionarPrimeiraOpcaoNovaConversa = this.page.locator('td').first();
         this.botaoIniciarChat = this.page.getByRole('button', { name: 'Iniciar chat' }).first();
-        this.checkboxSelecionarPrimeiraFatura = this.page.locator('td').first()
         this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar (1)' });
         this.botaoAcoesDentroConversaRespostasPadrao = this.page.getByRole('button', { name: 'Respostas Padrão' });
         this.botaoAcoesDentroConversaRespostasPadraoCriar = this.page.getByRole('button', { name: 'clique aqui' });
@@ -178,7 +177,7 @@ export default class BotNovo {
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
         await this.botaoConversaOpcoesRedefinirClienteBuscarCliente.click();
-        await this.page.getByPlaceholder('Clique para buscar por código').click();
+        await this.page.getByPlaceholder('Clique paraa buscar por código').click();
         await this.page.getByPlaceholder('Clique para buscar por código').fill('teste banco de dados');
         await this.page.getByText('teste banco dados').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
