@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../src/Pages/LoginPage";
-import { MainPage } from "../../src/Pages/MainPage";
-import { TipoDePagina } from "../../src/Utils/TipoDePagina";
-import { ConfigPage } from "../../src/Pages/ConfigPage";
+import { LoginPage } from "../../src/paginas/LoginPage";
+import { MainPage } from "../../src/paginas/MainPage";
+import { TipoPagina } from "../../src/utilitarios/TipoPagina";
+import { ConfigPage } from "../../src/paginas/ConfigPage";
 import { url } from "../../Setup";
 
 test.describe("CRUD Feriados", () => {
@@ -19,7 +19,7 @@ test.describe("CRUD Feriados", () => {
     paginaPrincipal = await paginaLogin.realizar_login();
     console.log("Entrando na página de configurações");
     paginaConfiguracoes = await paginaPrincipal.irParaPagina(
-      TipoDePagina.CONFIGURACOES
+      TipoPagina.CONFIGURACOES
     );
     console.log("Entrando no submenu de feriados");
     await paginaConfiguracoes.entrarNoSubmenuFeriado(url);

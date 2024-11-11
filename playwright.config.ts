@@ -3,23 +3,23 @@ require("dotenv").config();
 
 export default defineConfig({
   timeout: 90 * 1000,
-  testDir: "tests/",
+  testDir: "testes/",
   fullyParallel: true,
   workers: 5,
   reporter: [['html', { printSteps: true }]],
-
-  // use: {
+  
+  use: {
   //   video: {
   //     mode: "on",
   //     size: { width: 1920, height: 1080 }
   //   },
-  //   launchOptions: {
-  //     args: ["--start-maximized"],
-      
-  //   },
+    // launchOptions: {
+    //   args: ["--start-maximized"],
+    //   slowMo: 5,
+    // },
     
   //   screenshot: "on",
-  // },
+  },
 
   projects: [
     {
@@ -28,7 +28,7 @@ export default defineConfig({
         // ...devices["Desktop Chrome"],
         // channel: 'chrome',
         // viewport: { width: 1920, height: 1080 },
-        viewport: { width: 1920, height: 1080 },
+        // viewport: { width: 1920, height: 1080 },
       },
     },
   ],
