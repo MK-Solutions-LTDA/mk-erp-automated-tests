@@ -32,7 +32,7 @@ export default class BotNovo {
     botaoExcluirRespostaPadrao: Locator;
     campoDePesquisaDePessoaNovaConversa: Locator;
     abaPrimeiraConversaDisponivel: Locator;
-    selecionarPrimeiraOpcaoNovaConversa: Locator;
+    selecionarPrimeiraOpcao: Locator;
     botaoIniciarChat: Locator;
     botaoAcoesDentroConversaRespostasPadrao: Locator;
     botaoAcoesDentroConversaRespostasPadraoCriar: Locator;
@@ -43,11 +43,15 @@ export default class BotNovo {
     botaoConversaOpcoesRedefinirCliente: Locator;
     botaoConversaOpcoesRedefinirClienteBuscarCliente: Locator;
     botaoConversaOpcoesRedefinirClienteSalvar: Locator;
+    botaoConversaOpcoesConvidarOperador: Locator;
+    botaoConversaConfirmarConvite: Locator;
     botaoConversaOpcoesRedefinirClienteSalvarConfirma: Locator;
     campoDePesquisaBuscarPorCodigo: Locator;
     toastDeSucessoContratoRedefinido: Locator;
     toastDeSucessoRespostaPadraoExcluida: Locator;
     toastDeSucessoRespostaPadraoCriada: Locator;
+    toastDeSucessoRespostaPadraoEditada: Locator;
+    toastDeSucessoConviteOperador: Locator;
     botaoFecharModal: Locator;
 
     constructor(page: Page) {
@@ -79,7 +83,7 @@ export default class BotNovo {
         this.toastDeSucesso = this.page.locator('div').filter({ hasText: /^Sucesso!Segundas vias enviadas com sucesso!$/ }).nth(2);
         this.campoDePesquisaDePessoaNovaConversa = this.page.getByPlaceholder('Clique para buscar por código');
         this.abaPrimeiraConversaDisponivel = this.page.getByRole('tab', { name: 'Whatsapp' }).first();
-        this.selecionarPrimeiraOpcaoNovaConversa = this.page.locator('td').first();
+        this.selecionarPrimeiraOpcao = this.page.locator('td').first();
         this.botaoIniciarChat = this.page.getByRole('button', { name: 'Iniciar chat' }).first();
         this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar (1)' });
         this.botaoAcoesDentroConversaRespostasPadrao = this.page.getByRole('button', { name: 'Respostas Padrão' });
@@ -98,6 +102,9 @@ export default class BotNovo {
         this.botaoExcluirRespostaPadrao = this.page.getByRole('button', { name: 'Excluir' });
         this.toastDeSucessoRespostaPadraoCriada = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão criada com sucesso!$/ }).nth(2);
         this.botaoFecharModal = this.page.locator('xpath=//button[@class="w-12 h-12 bg-slate-200 rounded-full absolute -top-6 -right-6 dark:!bg-[#F1FFF7] dark:text-[#253339]"]')
+        this.botaoConversaOpcoesConvidarOperador = this.page.getByRole('button', { name: 'Convidar p/ o chat' });
+        this.botaoConversaConfirmarConvite = page.getByRole('button', { name: 'Convidar' });
+        this.toastDeSucessoConviteOperador = this.page.locator('div').filter({ hasText: /^Sucesso!Convite enviado com sucesso!$/ }).nth(2);
     };
 
     @step('Limpar conversa')
@@ -125,7 +132,7 @@ export default class BotNovo {
 
     @step('Iniciar conversa')
     async iniciarConversa() {
-        await this.selecionarPrimeiraOpcaoNovaConversa.click();
+        await this.selecionarPrimeiraOpcao.click();
         await this.botaoIniciarChat.click();
     }
 
@@ -194,6 +201,15 @@ export default class BotNovo {
     async procurarRespostaPadrao(nomeRespostaPadrao: string) {
         await this.page.getByRole('button', { name: nomeRespostaPadrao }).click();
         await this.page.getByLabel(nomeRespostaPadrao).getByRole('button').nth(1).click();
+    }
+
+    @step('Convidar operador para conversa')
+    async convidarOperadorParaConversa(nomeOperador: string) {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoConversaOpcoesConvidarOperador.click();
+        await this.selecionarPrimeiraOpcao.click();
+        await this.botaoConversaConfirmarConvite.click();
+        await expect(this.toastDeSucessoConviteOperador ).toBeVisible();
     }
 
     @step('Redefinir contato já identificado')
