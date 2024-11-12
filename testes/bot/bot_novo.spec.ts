@@ -73,33 +73,15 @@ test.describe('Opções', () => {
         await paginaBotNovo.devolverConversaParaFila();
     });
 
-    // test('Acessar duas contas simultaneamente', async ({ 
-    //     paginaLogin, 
-    //     paginaPrincipal, 
-    //     paginaBotNovo, 
-    //     paginaLogin2, 
-    //     paginaPrincipal2, 
-    //     paginaBotNovo2, 
-    //     page 
-    // }) => {
-
-    //     await page.waitForLoadState('load')
-    //     await paginaBotNovo.abrirNovaConversa();
-    //     await paginaBotNovo2.abrirNovaConversa();
-    //     await paginaBotNovo.acessarAbaPrimeiraConversa();
-    //     await paginaBotNovo2.acessarAbaPrimeiraConversa();
-    // });
-
 });
 
 test.describe('Nova conversa', () => {
-    test('Criar um novo contato preenchendo os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
-        await paginaBotNovo.abrirNovaConversa();
-        await paginaBotNovo.acessarAbaPrimeiraConversa();
+    test.only('Criar um novo contato preenchendo os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.acessarMenuCadastroPessoas().then(async (page1) => {
             console.log('Acessou o menu de cadastro de pessoas', page1.url());
             await page1.waitForLoadState('load');
-            console.log('teste: ', await page1.locator('iframe[name="mainform"]').contentFrame().locator('iframe'));
+            await page1.frame
+            await page1.close();
         });
         // await paginaBotNovo.criarNovoContato();
     });

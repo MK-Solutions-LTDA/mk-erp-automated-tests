@@ -84,4 +84,4 @@ export const test = base.extend<{
 
 });
 
-export const expect = base.expect;
+export const expect = base.expect
