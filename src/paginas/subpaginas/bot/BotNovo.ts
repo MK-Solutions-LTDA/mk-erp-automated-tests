@@ -1,10 +1,11 @@
-import { type Locator, Page } from "@playwright/test";
+import { BrowserContext, type Locator, Page } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
 import { expect } from "../../../utilitarios/fixtures/base";
 
 export default class BotNovo {
 
     page: Page;
+    navegador: BrowserContext;
 
     statusOperador: Locator;
     indicadoresMenu: Locator;
@@ -59,9 +60,10 @@ export default class BotNovo {
     botaoConfirmar: Locator;
     botaoConversaOpcoesDevolverParaFila: Locator;
 
-    constructor(page: Page) {
+    constructor(page: Page, navegador: BrowserContext) {
 
         this.page = page;
+        this.navegador = navegador;
 
         this.statusOperador = this.page.locator('button').filter({ hasText: 'Disponível' });
         this.indicadoresMenu = this.page.getByRole('link', { name: 'Indicadores' });
@@ -263,5 +265,27 @@ export default class BotNovo {
         await this.confirmarModalConversa.click();
         await this.botaoConfirmar.click();
         await expect(this.toastDeSucessoDevolverConversaParaFila).toBeVisible();  
+    }
+
+    @step('Criar novo contato dentro do cliente')
+    async criarNovoContato() {
+        await this.chatBotMenu.click();
+        await this.botaoNovaConversa.click();
+        await this.pesquisarPessoaConversa('teste caroline');
+        await this.page.getByRole('button', { name: 'Novo contato' }).click();
+        await this.page.getByRole('combobox').click();
+        await this.page.getByLabel('Gupshup 4229').click();
+        await this.page.getByLabel('Telefone com DDD *').click();
+        await this.page.getByLabel('Telefone com DDD *').fill('(51) 9802-65275');
+        await this.page.getByRole('button', { name: 'Salvar' }).click();
+    }
+
+    @step('Remover contato')
+    async acessarMenuCadastroPessoas() {
+        await this.page.locator('.ml-4').click();
+        const page1Promise = this.navegador.waitForEvent('page');
+        await this.page.locator('div').filter({ hasText: /^Cadastro do cliente$/ }).first().click();
+        const page1 = await page1Promise;
+        return page1;
     }
 }

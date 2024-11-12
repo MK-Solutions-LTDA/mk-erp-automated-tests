@@ -1,4 +1,6 @@
+import exp from "constants";
 import { test } from "../../src/utilitarios/fixtures/base";
+import { expect } from "@playwright/test";
 
 test.describe('Ações', () => {
     test('Enviar um anexo de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
@@ -63,6 +65,7 @@ test.describe('Opções', () => {
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.transferirConversaParaSetor('Atendimento ao Cliente', true);
     });
+
     test('Devolver conversa para a fila', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
         await page.waitForLoadState('load')
         await paginaBotNovo.abrirNovaConversa();
@@ -70,21 +73,34 @@ test.describe('Opções', () => {
         await paginaBotNovo.devolverConversaParaFila();
     });
 
-    test('Acessar duas contas simultaneamente', async ({ 
-        paginaLogin, 
-        paginaPrincipal, 
-        paginaBotNovo, 
-        paginaLogin2, 
-        paginaPrincipal2, 
-        paginaBotNovo2, 
-        page 
-    }) => {
+    // test('Acessar duas contas simultaneamente', async ({ 
+    //     paginaLogin, 
+    //     paginaPrincipal, 
+    //     paginaBotNovo, 
+    //     paginaLogin2, 
+    //     paginaPrincipal2, 
+    //     paginaBotNovo2, 
+    //     page 
+    // }) => {
 
-        await page.waitForLoadState('load')
+    //     await page.waitForLoadState('load')
+    //     await paginaBotNovo.abrirNovaConversa();
+    //     await paginaBotNovo2.abrirNovaConversa();
+    //     await paginaBotNovo.acessarAbaPrimeiraConversa();
+    //     await paginaBotNovo2.acessarAbaPrimeiraConversa();
+    // });
+
+});
+
+test.describe('Nova conversa', () => {
+    test('Criar um novo contato preenchendo os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
-        await paginaBotNovo2.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
-        await paginaBotNovo2.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.acessarMenuCadastroPessoas().then(async (page1) => {
+            console.log('Acessou o menu de cadastro de pessoas', page1.url());
+            await page1.waitForLoadState('load');
+            console.log('teste: ', await page1.locator('iframe[name="mainform"]').contentFrame().locator('iframe'));
+        });
+        // await paginaBotNovo.criarNovoContato();
     });
-
 });

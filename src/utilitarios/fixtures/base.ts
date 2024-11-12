@@ -63,7 +63,7 @@ export const test = base.extend<{
     const pagePromise = navegador1.waitForEvent('page');
     await paginaPrincipal.irParaPagina(TipoPagina.BOT);
     const newPage = await pagePromise;
-    const paginaBotNovo = new BotNovo(newPage);
+    const paginaBotNovo = new BotNovo(newPage, navegador1);
     await use(paginaBotNovo);
     await newPage.waitForLoadState('load');
     await paginaBotNovo.limparConversa();
@@ -75,7 +75,7 @@ export const test = base.extend<{
     const pagePromise = navegador2.waitForEvent('page');
     await paginaPrincipal2.irParaPagina(TipoPagina.BOT);
     const newPage = await pagePromise;
-    const paginaBotNovo = new BotNovo(newPage);
+    const paginaBotNovo = new BotNovo(newPage, navegador2);
     await use(paginaBotNovo);
     await newPage.waitForLoadState('load');
     await paginaBotNovo.limparConversa();

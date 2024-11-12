@@ -7,7 +7,7 @@ export default defineConfig({
   fullyParallel: true,
   workers: 5,
   reporter: [['html', { printSteps: true }]],
-  
+  retries: 2,
   use: {
     launchOptions: {
       args: ["--start-maximized"],

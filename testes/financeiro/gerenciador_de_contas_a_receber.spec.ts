@@ -6,6 +6,7 @@ import { ItensMenu } from "../../src/utilitarios/itens_submenu/financeiro/financ
 import { API } from "../../src/utilitarios/api/financeiro/gerenciador_contas_receber/apimap";
 import { expect, test } from "@playwright/test";
 import Servicos from "../../src/utilitarios/servicos";
+import { user, pass } from "../../Setup";
 import { GerenciadorContasReceber } from "../../src/paginas/subpaginas/financeiro/GerenciadorContasReceber";
 
 let paginaGerenciadorContasReceber: GerenciadorContasReceber;
@@ -23,7 +24,7 @@ test.describe("Faturas", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user, pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasReceber = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER);
 
@@ -260,7 +261,7 @@ test.describe("Contas não faturadas", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user, pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasReceber = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER);
 
@@ -371,7 +372,7 @@ test.describe("Email", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user, pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasReceber = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER);
 

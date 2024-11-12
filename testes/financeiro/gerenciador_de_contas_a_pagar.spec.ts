@@ -8,6 +8,7 @@ import { API } from "../../src/utilitarios/api/financeiro/gerenciador_contas_pag
 import { expect, test } from "@playwright/test";
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import Servicos from "../../src/utilitarios/servicos";
+import { pass, user } from "../../Setup";
 
 // test.use({
 //   video: { mode: "on", size: { width: 1920, height: 1080 } },
@@ -25,7 +26,7 @@ test.describe('Faturas', () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user,pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
 
@@ -224,7 +225,7 @@ test.describe("Despesas", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user,pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
 
@@ -271,7 +272,7 @@ test.describe("Paginação de resultados", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user,pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
 
@@ -331,7 +332,7 @@ test.describe("Paginação de resultados", () => {
       paginaLogin = new LoginPage(page);
 
       await paginaLogin.entrarPaginaLogin();
-      paginaPrincipal = await paginaLogin.realizar_login();
+      paginaPrincipal = await paginaLogin.realizarLogin(user,pass);
       paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
       paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
   
@@ -374,7 +375,7 @@ test.describe("Paginação de resultados", () => {
       paginaLogin = new LoginPage(page);
 
       await paginaLogin.entrarPaginaLogin();
-      paginaPrincipal = await paginaLogin.realizar_login();
+      paginaPrincipal = await paginaLogin.realizarLogin(user,pass);
       paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
       paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
   
@@ -419,7 +420,7 @@ test.describe("Faturas vencidas", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizar_login();
+    paginaPrincipal = await paginaLogin.realizarLogin(user,pass);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasPagar = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_PAGAR);
 
