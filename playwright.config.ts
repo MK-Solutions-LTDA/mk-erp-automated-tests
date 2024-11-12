@@ -9,6 +9,9 @@ export default defineConfig({
   reporter: [['html', { printSteps: true }]],
   
   use: {
+    launchOptions: {
+      args: ["--start-maximized"],
+    },
   //   video: {
   //     mode: "on",
   //     size: { width: 1920, height: 1080 }
@@ -22,12 +25,9 @@ export default defineConfig({
       use: {
         // ...devices["Desktop Chrome"],
         // channel: 'chrome',
-        // launchOptions: {
-        //   args: ["--start-maximized"],
-        //   // slowMo: 5,
-        // },
-        viewport: { width: 1920, height: 945 },
+
+        viewport: null,
       },
     },
   ],
-});
+})

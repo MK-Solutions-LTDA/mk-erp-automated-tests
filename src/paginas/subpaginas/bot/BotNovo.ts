@@ -17,6 +17,7 @@ export default class BotNovo {
     canalDeAtendimento: Locator;
     cidadeDeAtendimento: Locator;
     buscarOperadores: Locator;
+    abaFilaEspera: Locator;
 
     exportarCSV: Locator;
 
@@ -47,12 +48,18 @@ export default class BotNovo {
     botaoConversaConfirmarConvite: Locator;
     botaoConversaOpcoesRedefinirClienteSalvarConfirma: Locator;
     campoDePesquisaBuscarPorCodigo: Locator;
-    toastDeSucessoContratoRedefinido: Locator;
+    toastDeSucessoContatoRedefinido: Locator;
     toastDeSucessoRespostaPadraoExcluida: Locator;
     toastDeSucessoRespostaPadraoCriada: Locator;
     toastDeSucessoRespostaPadraoEditada: Locator;
     toastDeSucessoConviteOperador: Locator;
     botaoFecharModal: Locator;
+    botaoDevolverParaFila: Locator;
+    confirmarDevolucaoFila: Locator;
+    devolverParaFilaDefinitivamente: Locator;
+    toastDeSucessoDevolverParaFila: Locator;
+    botaoResgatarDaFila: Locator;
+    toastResgateEfetuado: Locator;
 
     constructor(page: Page) {
 
@@ -91,13 +98,12 @@ export default class BotNovo {
         this.botaosalvarRespostaPadrao = this.page.getByRole('button', { name: 'Salvar' });
         this.cadastroGrupoRespostaPadrao = this.page.getByPlaceholder('Clique para preencher');
         this.cadastroMensagemRespostaPadrao = this.page.getByLabel('Mensagem *');
-        //this.botaoFecharMenuRespostasPadrao = this.page.locator('[id="radix-\\:rov\\:"] > .w-12').nth(0);
         this.botaoConversaOpcoesRedefinirCliente = this.page.getByText('Redefinir cliente');
         this.botaoConversaOpcoesRedefinirClienteBuscarCliente = this.page.getByPlaceholder('Clique para buscar por código');
         this.botaoConversaOpcoesRedefinirClienteSalvar = this.page.getByRole('button', { name: 'Redefinir cliente' });
         this.botaoConversaOpcoesRedefinirClienteSalvarConfirma = this.page.getByRole('button', { name: 'Confirmar' });
         this.campoDePesquisaBuscarPorCodigo = this.page.getByPlaceholder('Clique para buscar por código').first()
-        this.toastDeSucessoContratoRedefinido = this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2);
+        this.toastDeSucessoContatoRedefinido = this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2);
         this.toastDeSucessoRespostaPadraoExcluida = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão excluída com sucesso!$/ }).nth(2);
         this.botaoExcluirRespostaPadrao = this.page.getByRole('button', { name: 'Excluir' });
         this.toastDeSucessoRespostaPadraoCriada = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão criada com sucesso!$/ }).nth(2);
@@ -105,6 +111,14 @@ export default class BotNovo {
         this.botaoConversaOpcoesConvidarOperador = this.page.getByRole('button', { name: 'Convidar p/ o chat' });
         this.botaoConversaConfirmarConvite = page.getByRole('button', { name: 'Convidar' });
         this.toastDeSucessoConviteOperador = this.page.locator('div').filter({ hasText: /^Sucesso!Convite enviado com sucesso!$/ }).nth(2);
+        this.botaoDevolverParaFila = this.page.getByRole('button', { name: 'Devolver para a fila' });
+        this.confirmarDevolucaoFila = this.page.getByLabel('Estou ciente que esta ação nã');
+        this.devolverParaFilaDefinitivamente = this.page.getByRole('button', { name: 'Confirmar' });
+        this.toastDeSucessoDevolverParaFila = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado devolvido para a fila com sucesso!$/ }).nth(1)
+        this.abaFilaEspera = this.page.getByRole('tab', { name: 'Fila em espera' });
+        this.botaoResgatarDaFila = this.page.getByRole('row', { name: /0\s?min/i }).getByRole('button').first();
+        this.toastResgateEfetuado = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado resgatado com sucesso\.$/ }).nth(2);
+
     };
 
     @step('Limpar conversa')
@@ -212,7 +226,7 @@ export default class BotNovo {
         await expect(this.toastDeSucessoConviteOperador ).toBeVisible();
     }
 
-    @step('Redefinir contato já identificado')
+    @step('Redefinir contato identificado')
     async redefinirContato() {
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
@@ -222,15 +236,27 @@ export default class BotNovo {
         await this.page.getByText('teste banco dados').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
-        await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
+        await expect(this.toastDeSucessoContatoRedefinido).toBeVisible();
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
         await this.botaoConversaOpcoesRedefinirClienteBuscarCliente.click();
         await this.campoDePesquisaBuscarPorCodigo.click();
         await this.campoDePesquisaBuscarPorCodigo.pressSequentially('teste caroline');
-        await this.page.getByText('teste caroline').first().click();
+        await this.page.getByText('1107 - Teste Caroline').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
-        await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
+        await expect(this.toastDeSucessoContatoRedefinido).toBeVisible();
+    }
+
+    @step('Devolver conversa para fila')
+    async devolverParaFila() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoDevolverParaFila.click();
+        await this.confirmarDevolucaoFila.click();
+        await this.devolverParaFilaDefinitivamente.click();
+        await expect(this.toastDeSucessoDevolverParaFila).toBeVisible();
+        await this.abaFilaEspera.click();
+        await this.botaoResgatarDaFila.click();
+        await expect(this.toastResgateEfetuado).toBeVisible();
     }
 }

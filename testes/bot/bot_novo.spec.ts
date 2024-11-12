@@ -55,5 +55,12 @@ test.describe('Opções', () => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.convidarOperadorParaConversa('caroline');
-    })
+    });
+
+    test('Devolver para a fila', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.devolverParaFila();
+    });
 });
