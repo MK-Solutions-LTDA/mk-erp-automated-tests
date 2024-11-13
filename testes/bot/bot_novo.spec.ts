@@ -94,11 +94,26 @@ test.describe('Opções', () => {
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.enviarAudioChat();
         await paginaBotNovo.enviarAudioChat();
-    }); 
+    });
+
     test('Fazer download do arquivo de audio', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.enviarAudioChat();
         await paginaBotNovo.fazerDownloadAudio();
     });
+
+    test('Copiar link do arquivo de audio', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAudioChat();
+        await paginaBotNovo.copiarLinkAudio();
+    });
+
+    test('Ouvir audio antes de enviar ele para a conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAudioChat();
+        await paginaBotNovo.ouvirAudio();
+    })
 });

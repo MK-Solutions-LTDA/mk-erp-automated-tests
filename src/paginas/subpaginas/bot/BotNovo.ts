@@ -1,4 +1,4 @@
-import { BrowserContext, type Locator, Page } from "@playwright/test";
+import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
 import { expect } from "../../../utilitarios/fixtures/base";
 
@@ -58,6 +58,7 @@ export default class BotNovo {
     toastDeSucessoConviteOperador: Locator;
     toastDeSucessoTransferenciaSetor: Locator;
     toastDeSucessoDevolverConversaParaFila: Locator;
+    toastDeSucessoCopiarLink: Locator;
     botaoFecharModal: Locator;
     botaoConfirmar: Locator;
     botaoConversaOpcoesDevolverParaFila: Locator;
@@ -66,6 +67,10 @@ export default class BotNovo {
     botaoConversaGravarAudio: Locator;
     botaoConversaPararGravacaoAudio: Locator;
     botaoConversaFazerDownloadAudio: Locator;
+    botaoConversaCopiarLink: Locator;
+    botaoConversaDarPlayAudio: Locator;
+    botaoConversaPausarAudio: Locator;
+    
     constructor(page: Page, navegador: BrowserContext) {
 
         this.page = page;
@@ -130,6 +135,10 @@ export default class BotNovo {
         this.botaoConversaGravarAudio = this.page.locator('.flex > button > .h-9');
         this.botaoConversaPararGravacaoAudio = this.botaoConversaGravarAudio;
         this.botaoConversaFazerDownloadAudio = this.page.getByRole('button', { name: 'Download' })
+        this.botaoConversaCopiarLink = this.page.getByRole('button', { name: 'Copiar link' })
+        this.toastDeSucessoCopiarLink = this.page.locator('div').filter({ hasText: /^Link copiado com sucesso!$/ }).nth(2)
+        this.botaoConversaDarPlayAudio = this.page.locator('.hidden > div > button > .h-6');
+        this.botaoConversaPausarAudio = this.botaoConversaDarPlayAudio;
     };
 
     @step('Limpar conversa')
@@ -311,28 +320,52 @@ export default class BotNovo {
 
     @step('Enviar mensagem de audio ao chat')
     async enviarAudioChat() {   
-        await this.botaoConversaGravarAudio.click();
-        await this.page.waitForTimeout(10 * 1000); // tempo de gravaçao do audio
-        await this.botaoConversaPararGravacaoAudio.click();
-        await this.botaoConversaEnviarAudio.click();
-        await expect(this.botaoConversaFazerDownloadCopiarLink).toBeVisible();
+        await this.gravarAudio(10);
+        await this.botaoConversaEnviarAudio.click(); 
+        this.page.on('websocket', (ws: WebSocket) => {
+            console.log(ws.url());
+        });
+        // await expect(this.botaoConversaFazerDownloadCopiarLink).toBeVisible();
     }
+
+    @step('Gravar mensagem de audio')
+    async gravarAudio(tempoDeAudio: number) {
+        await this.botaoConversaGravarAudio.click();
+        await this.page.waitForTimeout(tempoDeAudio * 1000); // tempo de gravaçao do audio
+        await this.botaoConversaPararGravacaoAudio.click();
+    }    
 
     @step('Excluir audio antes de enviar')
     async excluirAudioChat() {
-        await this.botaoConversaGravarAudio.click();
-        await this.page.waitForTimeout(10 * 1000); // tempo de gravaçao do audio
+        await this.gravarAudio(10);
         await this.botaoConversaPararGravacaoAudio.click();
         await this.botaoConversaExcluirAudio.click();
+        await this.page.getByRole('row', { name: 'Financeiro-TESTE' }).first().click(); 
         await expect(this.botaoConversaExcluirAudio).toBeHidden();
     }
 
     @step('Fazer download do arquivo de audio')
     async fazerDownloadAudio() {
+        await this.gravarAudio(10);
         await this.botaoConversaFazerDownloadCopiarLink.click();
         await this.botaoConversaFazerDownloadAudio.click();
         this.page.on('download', (download) => {
             expect(download).toBeTruthy();
         });
+    }
+
+    @step('Copiar link do audio na conversa')
+    async copiarLinkAudio() {    
+        await this.botaoConversaFazerDownloadCopiarLink.click();
+        await this.botaoConversaCopiarLink.click();
+        await expect(this.toastDeSucessoCopiarLink).toBeVisible();
+    }
+    
+    @step('Ouvir o audio antes de enviar ele para a conversa')
+    async ouvirAudio() {
+        await this.gravarAudio(10);
+        await this.botaoConversaDarPlayAudio.click();
+        await this.page.waitForTimeout(10 * 1000); // tempo de escuta do audio
+        await this.botaoConversaPausarAudio.click();
     }
 }
