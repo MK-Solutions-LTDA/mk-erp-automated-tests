@@ -21,6 +21,8 @@ export default class BotNovo {
 
     exportarCSV: Locator;
 
+    botaoConversaEnviarAudio: Locator;
+    botaoConversaExcluirAudio: Locator;
     botaoNovaConversa: Locator;
     botaoConversaOpcoes: Locator;
     botaoConversaOpcoesEncerrarAtendimento: Locator;
@@ -59,7 +61,11 @@ export default class BotNovo {
     botaoFecharModal: Locator;
     botaoConfirmar: Locator;
     botaoConversaOpcoesDevolverParaFila: Locator;
-
+    primeiraMensagemDaConversa: Locator;
+    botaoConversaFazerDownloadCopiarLink: Locator; 
+    botaoConversaGravarAudio: Locator;
+    botaoConversaPararGravacaoAudio: Locator;
+    botaoConversaFazerDownloadAudio: Locator;
     constructor(page: Page, navegador: BrowserContext) {
 
         this.page = page;
@@ -95,6 +101,7 @@ export default class BotNovo {
         this.botaoEnviarSegundaViaFaturas = this.page.getByRole('button', { name: 'Enviar' }).first();
         this.botaoAcoesDentroConversaRespostasPadrao = this.page.getByRole('button', { name: 'Respostas Padrão' });
         this.botaoAcoesDentroConversaRespostasPadraoCriar = this.page.getByRole('button', { name: 'clique aqui' });
+        this.botaoConversaEnviarAudio = this.page.locator('slot > div > button:nth-child(3) > .flex')
         this.botaosalvarRespostaPadrao = this.page.getByRole('button', { name: 'Salvar' });
         this.cadastroGrupoRespostaPadrao = this.page.getByPlaceholder('Clique para preencher');
         this.cadastroMensagemRespostaPadrao = this.page.getByLabel('Mensagem *');
@@ -113,10 +120,16 @@ export default class BotNovo {
         this.botaoConversaConfirmarConvite = page.getByRole('button', { name: 'Convidar' });
         this.toastDeSucessoConviteOperador = this.page.locator('div').filter({ hasText: /^Sucesso!Convite enviado com sucesso!$/ }).nth(2);
         this.botaoConversaOpcoesTransferirAtendimentoSetor = this.page.getByText('Transferir p/ setor');
+        this.botaoConversaFazerDownloadCopiarLink = this.page.getByTestId('MoreVertOutlinedIcon');
+        this.botaoConversaExcluirAudio = this.page.locator('.hidden > button > button');
         this.toastDeSucessoTransferenciaSetor = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado transferido para o setor com sucesso!$/ }).nth(2);
         this.toastDeSucessoDevolverConversaParaFila = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado devolvido para a fila com sucesso!$/ }).nth(2);
         this.botaoConfirmar = this.page.getByRole('button', { name: 'Confirmar' });
+        this.primeiraMensagemDaConversa = this.page.locator('footer');
         this.botaoConversaOpcoesDevolverParaFila = this.page.getByRole('button', { name: 'Devolver para a fila' });
+        this.botaoConversaGravarAudio = this.page.locator('.flex > button > .h-9');
+        this.botaoConversaPararGravacaoAudio = this.botaoConversaGravarAudio;
+        this.botaoConversaFazerDownloadAudio = this.page.getByRole('button', { name: 'Download' })
     };
 
     @step('Limpar conversa')
@@ -165,7 +178,6 @@ export default class BotNovo {
     @step('Clicar nas faturas dentro da conversa')
     async clicarFaturas(numeroDeFaturas: number) {
         for (let i = 1; i < numeroDeFaturas; i++) {
-            console.log(i);
             await this.page.locator(`tr:nth-child(${i}) > td`).first().click();
         }  
     }
@@ -287,5 +299,40 @@ export default class BotNovo {
         await this.page.locator('div').filter({ hasText: /^Cadastro do cliente$/ }).first().click();
         const page1 = await page1Promise;
         return page1;
+    }
+
+    @step('Enviar mensagem chat')
+    async enviarMensagemChat(mensagem: string) {
+        await this.page.getByPlaceholder('Escreva uma mensagem').click();
+        await this.page.getByPlaceholder('Escreva uma mensagem').pressSequentially(mensagem);
+        await this.page.locator('slot').filter({ hasText: mensagem }).getByRole('button').nth(3).click();
+        await expect(this.primeiraMensagemDaConversa).toBeVisible();
+    }
+
+    @step('Enviar mensagem de audio ao chat')
+    async enviarAudioChat() {   
+        await this.botaoConversaGravarAudio.click();
+        await this.page.waitForTimeout(10 * 1000); // tempo de gravaçao do audio
+        await this.botaoConversaPararGravacaoAudio.click();
+        await this.botaoConversaEnviarAudio.click();
+        await expect(this.botaoConversaFazerDownloadCopiarLink).toBeVisible();
+    }
+
+    @step('Excluir audio antes de enviar')
+    async excluirAudioChat() {
+        await this.botaoConversaGravarAudio.click();
+        await this.page.waitForTimeout(10 * 1000); // tempo de gravaçao do audio
+        await this.botaoConversaPararGravacaoAudio.click();
+        await this.botaoConversaExcluirAudio.click();
+        await expect(this.botaoConversaExcluirAudio).toBeHidden();
+    }
+
+    @step('Fazer download do arquivo de audio')
+    async fazerDownloadAudio() {
+        await this.botaoConversaFazerDownloadCopiarLink.click();
+        await this.botaoConversaFazerDownloadAudio.click();
+        this.page.on('download', (download) => {
+            expect(download).toBeTruthy();
+        });
     }
 }

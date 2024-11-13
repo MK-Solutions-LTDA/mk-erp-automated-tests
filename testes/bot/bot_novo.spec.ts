@@ -1,6 +1,5 @@
-import exp from "constants";
+import { faker } from "@faker-js/faker/locale/pt_BR";
 import { test } from "../../src/utilitarios/fixtures/base";
-import { expect } from "@playwright/test";
 
 test.describe('Ações', () => {
     test('Enviar um anexo de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
@@ -52,13 +51,6 @@ test.describe('Opções', () => {
         await paginaBotNovo.redefinirContato();
     });
 
-    test('Convidar um operador com o status dispoível para a conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
-        await paginaBotNovo.abrirNovaConversa();
-        await paginaBotNovo.acessarAbaPrimeiraConversa();
-        await paginaBotNovo.convidarOperadorParaConversa('caroline');
-    })
-
     test('Transferir a conversa para um outro setor', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
         await page.waitForLoadState('load')
         await paginaBotNovo.abrirNovaConversa();
@@ -73,16 +65,40 @@ test.describe('Opções', () => {
         await paginaBotNovo.devolverConversaParaFila();
     });
 
-});
+    test('Enviar mensagens ao chat', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarMensagemChat(faker.lorem.sentence()); 
+    });
 
-test.describe('Nova conversa', () => {
-    test.only('Criar um novo contato preenchendo os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
-        await paginaBotNovo.acessarMenuCadastroPessoas().then(async (page1) => {
-            console.log('Acessou o menu de cadastro de pessoas', page1.url());
-            await page1.waitForLoadState('load');
-            await page1.frame
-            await page1.close();
-        });
-        // await paginaBotNovo.criarNovoContato();
+    test('Enviar mensagens ao chat com emojis', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarMensagemChat('⚰️💀👌💕🤣😖🫠🤪🥴');  
+    });
+
+    test('Enviar mensagem de audio ao chat', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAudioChat();
+    });
+    
+    test('Excluir audio antes de enviar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {    
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.excluirAudioChat();
+    });
+
+    test('Enviar dois áudios e verificar se um começa a tocar à partir do momento que o outro para', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAudioChat();
+        await paginaBotNovo.enviarAudioChat();
+    }); 
+    test('Fazer download do arquivo de audio', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.enviarAudioChat();
+        await paginaBotNovo.fazerDownloadAudio();
     });
 });

@@ -10,13 +10,17 @@ export default defineConfig({
   retries: 2,
   use: {
     launchOptions: {
-      args: ["--start-maximized"],
+      args: ["--start-maximized", 
+      "--use-fake-ui-for-media-stream", 
+      "--use-fake-device-for-media-stream"
+      ],
     },
   //   video: {
   //     mode: "on",
   //     size: { width: 1920, height: 1080 }
   //   },  
   //   screenshot: "on",
+    permissions: ['microphone', 'camera', 'geolocation'],
   },
 
   projects: [
