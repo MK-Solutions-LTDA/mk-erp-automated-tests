@@ -1,6 +1,7 @@
 import { type Locator, Page } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
 import { expect } from "../../../utilitarios/fixtures/base";
+import { faker } from "@faker-js/faker/locale/pt_BR";
 
 export default class BotNovo {
 
@@ -60,6 +61,26 @@ export default class BotNovo {
     toastDeSucessoDevolverParaFila: Locator;
     botaoResgatarDaFila: Locator;
     toastResgateEfetuado: Locator;
+    botaoSairConversa: Locator;
+    confirmarSaidaConversa: Locator;
+    sairConversaDefinitivamente: Locator;
+    toastDeErroSaidaOperador: Locator;
+    botaoTransferirParaSetor: Locator;
+    buscarSetor: Locator;
+    confirmarTransferenciaSetor: Locator;
+    toastDeSucessoTransferenciaSetor: Locator;
+    botaoGerenciarTagsDentroDaConversa: Locator;
+    botaoGerenciarTagsDentroDaConversaCriarTag: Locator;
+    botaoGerenciarTagsDentroDaConversaDescricao: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDaTag: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDoTexto: Locator;
+    botaoGerenciarTagsDentroDaConversaSalvar: Locator;
+    botaoCorDaTagConfirma: Locator;
+    botaoGerenciarTagsDentroDaConversaBuscarTag: Locator;
+    botaoGerenciarTagsDentroDaConversaEditarTag: Locator;
+
 
     constructor(page: Page) {
 
@@ -118,6 +139,29 @@ export default class BotNovo {
         this.abaFilaEspera = this.page.getByRole('tab', { name: 'Fila em espera' });
         this.botaoResgatarDaFila = this.page.getByRole('row', { name: /\b(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}\b/ }).getByRole('button').last();
         this.toastResgateEfetuado = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado resgatado com sucesso\.$/ }).nth(2);
+        this.botaoSairConversa = this.page.getByRole('button', { name: 'Sair da conversa' });
+        this.confirmarSaidaConversa = this.page.getByLabel('Estou ciente que esta ação nã');
+        this.sairConversaDefinitivamente = this.page.getByRole('button', { name: 'Sair' });
+        this.toastDeErroSaidaOperador = this.page.locator('div').filter({ hasText: /^Atenção!Não é possível sair da conversa sendo o único operador!$/ }).nth(2);
+        this.botaoTransferirParaSetor = this.page.getByText('Transferir p/ setor');
+        this.buscarSetor = this.page.getByPlaceholder('Buscar setor');
+        this.confirmarTransferenciaSetor = this.page.getByRole('button', { name: 'Transferir atendimento' });
+        this.toastDeSucessoTransferenciaSetor = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado transferido para o setor com sucesso!$/ }).nth(2);
+        this.botaoGerenciarTagsDentroDaConversa = this.page.locator('button').filter({ hasText: 'Gerenciar tags' }).nth(1);
+        this.botaoGerenciarTagsDentroDaConversaCriarTag = this.page.getByRole('button', { name: 'Criar nova tag' }).nth(1);
+        this.botaoGerenciarTagsDentroDaConversaDescricao = this.page.locator('input[name="nome"]');
+        this.botaoGerenciarTagsDentroDaConversaCorDaTag = this.page.getByRole('button').nth(1);
+        this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal = this.page.locator('input[name="corTag"]');
+        this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal = this.page.locator('input[name="corTexto"]');
+        this.botaoGerenciarTagsDentroDaConversaCorDoTexto = this.page.getByRole('button').nth(2);
+        this.botaoCorDaTagConfirma = this.page.getByRole('button', { name: 'Aplicar' });
+        this.botaoGerenciarTagsDentroDaConversaSalvar = this.page.getByRole('button', { name: 'Salvar' });
+        this.botaoGerenciarTagsDentroDaConversaBuscarTag = this.page.getByPlaceholder('Clique para buscar');
+        this.botaoGerenciarTagsDentroDaConversaEditarTag = this.page.getByRole('button').nth(2);
+
+
+
+
     };
 
     @step('Limpar conversa')
@@ -259,4 +303,63 @@ export default class BotNovo {
         await this.botaoResgatarDaFila.click();
         // await expect(this.toastResgateEfetuado).toBeVisible();
     }
-}
+
+    @step('Sair da conversa com apenas um operador')
+    async sairConversaUnicoOperador() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoSairConversa.click();
+        await this.confirmarSaidaConversa.click();
+        await this.sairConversaDefinitivamente.click();
+        await expect(this.toastDeErroSaidaOperador).toBeVisible();
+    }
+
+    @step('Transferir para setor')
+    async transferirParaSetor() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoTransferirParaSetor.click();
+        await this.buscarSetor.click();
+        await this.buscarSetor.pressSequentially('financeiro');
+        await this.page.getByRole('row', { name: 'Financeiro-TESTE' }).locator('label').click();
+        await this.page.getByRole('row', { name: 'Financeiro-TESTE' }).locator('label').click();
+        await this.confirmarTransferenciaSetor.click();
+        await expect (this.toastDeSucessoTransferenciaSetor).toBeVisible();
+        await this.abaFilaEspera.click();
+        await this.page.waitForTimeout(2000);
+        await this.botaoResgatarDaFila.click();
+    }
+
+    @step('Criar tag')
+    async criarTag() {
+        //Cor e API que dará o retorno 200
+        await this.botaoGerenciarTagsDentroDaConversa.click();
+        await this.botaoGerenciarTagsDentroDaConversaCriarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.pressSequentially(faker.animal.cat());
+        await this.page.getByText('Selecione uma cor').click({ position: { x: 0, y: 0 } });
+        await this.botaoCorDaTagConfirma.click();
+        await this.botaoGerenciarTagsDentroDaConversaSalvar.click();
+        }
+
+    @step('Editar tag')
+    async editarTag() {
+        //tem que ajustar a criação da tag e depois adicionar aqui a criação de uma tag com o nome Teste Edição pra ela ser editada sempre
+        await this.botaoGerenciarTagsDentroDaConversa.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.pressSequentially('Teste Edição');
+        await this.botaoGerenciarTagsDentroDaConversaEditarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.pressSequentially(faker.food.vegetable());
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.click();
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.pressSequentially(faker.color.rgb({ format: 'hex', casing: 'lower' }));
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.click();
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.pressSequentially(faker.color.rgb({ format: 'hex', casing: 'lower' }));
+        await this.botaoGerenciarTagsDentroDaConversaSalvar.click();
+        
+    }
+    }
