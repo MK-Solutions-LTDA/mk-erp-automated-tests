@@ -1,4 +1,4 @@
-import { pass, user, URL } from '../../Setup';
+import { URL } from '../../Setup';
 import { Page } from '@playwright/test';
 import { MainPage } from './MainPage';
 import step from '../utilitarios/decorators';
@@ -13,7 +13,8 @@ export class LoginPage {
 	async entrarPaginaLogin() { await this.page.goto(`${URL}/mk/login/?sys=MK0`) }
 
 	@step('Realizando login no sistema')
-	async realizar_login() {
+	async realizarLogin(user: string, pass: string) {
+		console.log('logando com user: ', user);
 		await this.page.waitForLoadState('domcontentloaded');
 		await this.page.locator('input[name="user"]').pressSequentially(user);
 		await this.page.locator('input[name="password"]').pressSequentially(pass);
