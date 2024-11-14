@@ -10,10 +10,10 @@ import { faker } from "@faker-js/faker/locale/pt_BR";
 import Servicos from "../../src/utilitarios/servicos";
 import { pass, user } from "../../Setup";
 
-// test.use({
-//   video: { mode: "on", size: { width: 1920, height: 1080 } },
-//   screenshot: { mode: "on", fullPage: true },
-// });
+test.use({
+  video: { mode: "on", size: { width: 1920, height: 1080 } },
+  screenshot: { mode: "on", fullPage: true },
+});
 
 let paginaGerenciadorContasPagar: GerenciadorContasPagar;
 let paginaLogin: LoginPage;

@@ -14,10 +14,10 @@ let paginaLogin: LoginPage;
 let paginaFinanceiro: FinanceiroPage;
 let paginaPrincipal: MainPage;
 
-// test.use({
-//   video: { mode: "on", size: { width: 1920, height: 1080 } },
-//   screenshot: { mode: "on", fullPage: true },
-// });
+test.use({
+  video: { mode: "on", size: { width: 1920, height: 1080 } },
+  screenshot: { mode: "on", fullPage: true },
+});
 
 test.describe("Faturas", () => {
   test.beforeEach(async ({ page }) => {

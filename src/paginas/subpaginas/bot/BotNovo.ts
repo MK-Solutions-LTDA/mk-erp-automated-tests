@@ -1,11 +1,13 @@
 import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
+import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
 
 export default class BotNovo {
 
     page: Page;
     navegador: BrowserContext;
+    websocket: string[] = [];
 
     statusOperador: Locator;
     indicadoresMenu: Locator;
@@ -140,6 +142,12 @@ export default class BotNovo {
         this.botaoConversaDarPlayAudio = this.page.locator('.hidden > div > button > .h-6');
         this.botaoConversaPausarAudio = this.botaoConversaDarPlayAudio;
     };
+
+    @step('Registrar mensagens do websocket')
+    async registrarMensagensWebsocket(mensagem: string){
+        this.websocket.push(mensagem);
+        console.log('mensagem resgistrada: ', mensagem);
+    }
 
     @step('Limpar conversa')
     async limparConversa() {
@@ -315,17 +323,15 @@ export default class BotNovo {
         await this.page.getByPlaceholder('Escreva uma mensagem').click();
         await this.page.getByPlaceholder('Escreva uma mensagem').pressSequentially(mensagem);
         await this.page.locator('slot').filter({ hasText: mensagem }).getByRole('button').nth(3).click();
-        await expect(this.primeiraMensagemDaConversa).toBeVisible();
+        console.log('Campeao gerado: ', getRandomChampion());
+        expect(this.websocket[0]).toBe(mensagem);
     }
 
     @step('Enviar mensagem de audio ao chat')
     async enviarAudioChat() {   
         await this.gravarAudio(10);
         await this.botaoConversaEnviarAudio.click(); 
-        this.page.on('websocket', (ws: WebSocket) => {
-            console.log(ws.url());
-        });
-        // await expect(this.botaoConversaFazerDownloadCopiarLink).toBeVisible();
+        await expect(this.botaoConversaFazerDownloadCopiarLink).toBeVisible();
     }
 
     @step('Gravar mensagem de audio')

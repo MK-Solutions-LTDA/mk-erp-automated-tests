@@ -62,9 +62,36 @@ export const test = base.extend<{
   paginaBotNovo: async ({ paginaPrincipal, navegador1 }, use) => {
     const pagePromise = navegador1.waitForEvent('page');
     await paginaPrincipal.irParaPagina(TipoPagina.BOT);
+
     const newPage = await pagePromise;
+
+    // Interceptar e monitorar a conexão WebSocket
+    newPage.on('websocket', (ws) => {
+      if (ws.url().includes('wss://mk4.mksolutions.com.br/ws-mkbot/')) {
+        console.log('Conexão WebSocket iniciada:', ws.url());
+
+        ws.on('framereceived', (frame) => {
+          const payload = frame.payload.toString();
+          
+          if (payload.includes('<body>')) {
+            console.log('Mensagem recebida com body:', payload);
+            const bodyContentMatch = payload.match(/<body>(.*?)<\/body>/);
+            if (bodyContentMatch && bodyContentMatch[1]) {
+              paginaBotNovo.registrarMensagensWebsocket(bodyContentMatch[1]);
+            }
+          }
+
+        });
+
+        ws.on('close', () => {
+          console.log('Conexão WebSocket fechada');
+        });
+      }
+    });
+
     const paginaBotNovo = new BotNovo(newPage, navegador1);
     await use(paginaBotNovo);
+
     await newPage.waitForLoadState('load');
     await paginaBotNovo.limparConversa();
     await newPage.close();

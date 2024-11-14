@@ -72,9 +72,14 @@ test.describe('Opções', () => {
     });
 
     test('Enviar mensagens ao chat com emojis', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
+        await paginaBotNovo.page.routeWebSocket('wss://mk4.mksolutions.com.br/ws-mkbot/', route => {
+            const server = route.connectToServer();
+            console.log('Conectado ao servidor');
+            console.log(server.url());
+        });
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
-        await paginaBotNovo.enviarMensagemChat('⚰️💀👌💕🤣😖🫠🤪🥴');  
+        await paginaBotNovo.enviarMensagemChat('caixao ⚰️ esquelo💀 okey👌 corasoes💕 rindo🤣 oomeudeus😖 marcia🫠 michelly bolos🤪 machonha🥴');  
     });
 
     test('Enviar mensagem de audio ao chat', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {

@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 90 * 1000,
   testDir: "testes/",
   fullyParallel: true,
-  workers: 5,
+  workers: 3,
   reporter: [['html', { printSteps: true }]],
   retries: 2,
   use: {
