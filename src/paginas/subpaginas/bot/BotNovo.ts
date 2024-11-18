@@ -374,4 +374,4 @@ export default class BotNovo {
         await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
         
     }
-    }
+}
