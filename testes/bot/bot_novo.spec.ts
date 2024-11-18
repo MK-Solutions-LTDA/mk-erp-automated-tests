@@ -36,6 +36,11 @@ test.describe('Ações', () => {
         await paginaBotNovo.excluirRespostaPadrao('Resposta padrão teste');
         await paginaBotNovo.botaoFecharModal.click();
     });
+
+    test('Acessar cadastro do cliente', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+    });
 });
 
 test.describe('Opções', () => {
@@ -71,7 +76,7 @@ test.describe('Opções', () => {
         });
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
-        await paginaBotNovo.enviarMensagemChat('caixao ⚰️ esquelo💀 okey👌 corasoes💕 rindo🤣 oomeudeus😖 marcia🫠 michelly bolos🤪 machonha🥴');  
+        await paginaBotNovo.enviarMensagemChat('caixao⚰️ esquelo💀 okey👌 corasoes💕 rindo🤣 oomeudeus😖 marcia🫠 michelly bolos🤪 machonha🥴');  
     });
 
     test('Enviar mensagem de audio ao chat', async ({ paginaLogin, paginaPrincipal, paginaBotNovo}) => {
