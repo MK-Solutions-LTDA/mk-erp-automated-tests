@@ -117,5 +117,53 @@ test.describe('Opções', () => {
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.enviarAudioChat();
         await paginaBotNovo.ouvirAudio();
-    })
+    });
+
+    test('Devolver para a fila', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.devolverParaFila();
+    });
+
+    test('Sair da conversa (único operador)', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.sairConversaUnicoOperador();
+    });
+
+    test('Transferir para setor', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.transferirParaSetor();
+    });
+});
+
+        //API que dará o retorno 200
+test.describe('Tags', () => {
+    test('Criar tag', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {     
+        const responsePromise = new Promise(async (resolve) => {
+        page.on("response", (response) => {
+          if (response.url().includes(`${URL}/mk/WSMKBotCriarTag.rule`)) {
+            return resolve(response);    }
+        });
+        });
+        await page.waitForLoadState('load')
+        await paginaBotNovo.abrirNovaConversa();
+        await paginaBotNovo.acessarAbaPrimeiraConversa();
+        await paginaBotNovo.criarTag();
+        async ({ page }) => {
+        }
+        const response = await responsePromise;
+ //   expect(await Services.checarRequisicao(response)).toBeTruthy();  
+    });
+
+  test('Editar Tag', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
+    await page.waitForLoadState('load')
+    await paginaBotNovo.abrirNovaConversa();
+    await paginaBotNovo.acessarAbaPrimeiraConversa();
+    await paginaBotNovo.editarTag();
+});
 });

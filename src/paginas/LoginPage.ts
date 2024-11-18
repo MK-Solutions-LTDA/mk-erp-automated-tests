@@ -1,4 +1,4 @@
-import { URL } from '../../Setup';
+import { user, pass, URL } from '../../Setup';
 import { Page } from '@playwright/test';
 import { MainPage } from './MainPage';
 import step from '../utilitarios/decorators';
