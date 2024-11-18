@@ -80,6 +80,7 @@ export default class BotNovo {
     botaoCorDaTagConfirma: Locator;
     botaoGerenciarTagsDentroDaConversaBuscarTag: Locator;
     botaoGerenciarTagsDentroDaConversaEditarTag: Locator;
+    botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag: Locator;
 
 
     constructor(page: Page) {
@@ -158,6 +159,7 @@ export default class BotNovo {
         this.botaoGerenciarTagsDentroDaConversaSalvar = this.page.getByRole('button', { name: 'Salvar' });
         this.botaoGerenciarTagsDentroDaConversaBuscarTag = this.page.getByPlaceholder('Clique para buscar');
         this.botaoGerenciarTagsDentroDaConversaEditarTag = this.page.getByRole('button').nth(2);
+        this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag = this.page.locator('div:nth-child(44) > div > #confirmation').last();
 
 
 
@@ -330,7 +332,7 @@ export default class BotNovo {
 
     @step('Criar tag')
     async criarTag() {
-        //Cor e API que dará o retorno 200
+        //Cor e API que dará o retorno 200. Vincular e desvincular a tag recém criada. Tem verificação?
         await this.botaoGerenciarTagsDentroDaConversa.click();
         await this.botaoGerenciarTagsDentroDaConversaCriarTag.click();
         await this.botaoGerenciarTagsDentroDaConversaDescricao.click();
@@ -338,6 +340,10 @@ export default class BotNovo {
         await this.page.getByText('Selecione uma cor').click({ position: { x: 0, y: 0 } });
         await this.botaoCorDaTagConfirma.click();
         await this.botaoGerenciarTagsDentroDaConversaSalvar.click();
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+        await this.page.waitForTimeout(3000);
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+
         }
 
     @step('Editar tag')
@@ -360,6 +366,12 @@ export default class BotNovo {
         await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.press('Backspace');
         await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.pressSequentially(faker.color.rgb({ format: 'hex', casing: 'lower' }));
         await this.botaoGerenciarTagsDentroDaConversaSalvar.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+        await this.page.waitForTimeout(3000);
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
         
     }
     }
