@@ -2,30 +2,26 @@ import { faker } from "@faker-js/faker/locale/pt_BR";
 import { test } from "../../src/utilitarios/fixtures/base";
 
 test.describe('Ações', () => {
-    test('Enviar um anexo de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Enviar um anexo de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.enviarAnexo(2);
     });
 
-    test('Enviar dois anexos de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Enviar dois anexos de segunda via da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.enviarAnexo(3);
     });
 
-    test('Resposta padrão - Criar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Resposta padrão - Criar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.criarRespostaPadrao('Resposta padrão teste');
         await paginaBotNovo.botaoFecharModal.click();
     });
     
-    test('Resposta padrão - Editar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Resposta padrão - Editar', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.criarRespostaPadrao('Resposta padrão teste');
@@ -33,8 +29,7 @@ test.describe('Ações', () => {
         await paginaBotNovo.botaoFecharModal.click();
     });
 
-    test('Resposta padrão - Excluir', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Resposta padrão - Excluir', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.criarRespostaPadrao('Resposta padrão teste');
@@ -44,22 +39,19 @@ test.describe('Ações', () => {
 });
 
 test.describe('Opções', () => {
-    test('Redefinir contato identificado', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Redefinir contato identificado', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.redefinirContato();
     });
 
-    test('Transferir a conversa para um outro setor', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Transferir a conversa para um outro setor', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.transferirConversaParaSetor('Atendimento ao Cliente', true);
     });
 
-    test('Devolver conversa para a fila', async ({ paginaLogin, paginaPrincipal, paginaBotNovo, page }) => {
-        await page.waitForLoadState('load')
+    test('Devolver conversa para a fila', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
         await paginaBotNovo.abrirNovaConversa();
         await paginaBotNovo.acessarAbaPrimeiraConversa();
         await paginaBotNovo.devolverConversaParaFila();
