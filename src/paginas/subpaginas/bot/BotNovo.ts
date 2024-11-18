@@ -181,10 +181,12 @@ export default class BotNovo {
         this.botaoGerenciarTagsDentroDaConversaEditarTag = this.page.getByRole('button').nth(2);
         this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag = this.page.locator('div:nth-child(44) > div > #confirmation').last();
 
-
-
-
     };
+
+    @step('Adicionar mensagens vindas do WebSocket')
+    async registrarMensagensWebsocket(mensagem: string) {
+        this.websocket.push(mensagem);
+    }
 
     @step('Limpar conversa')
     async limparConversa() {
