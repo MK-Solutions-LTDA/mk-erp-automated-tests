@@ -102,24 +102,27 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
-                const isBloqueado = await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().getByRole('gridcell', {name: /Sim|Não/gmi}).innerText();
-                if (isBloqueado === 'Sim') {
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click(); 
+                await conexoesClientePage.waitForTimeout(2000)
+                if (await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('//div[@class="webix_ss_center"]').innerText() === '(NENHUM REGISTRO)') {
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Conexões de cobrança bloqueadas deste cliente'}).click();
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div[class="webix_ss_center"] div:nth-child(3) div:nth-child(1)').click(); 
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Desbloqueio de conexões"}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click(); 
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Conexões de cobrança ativas deste cliente"}).click();  
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
                 } 
+                
                 else {
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click(); 
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
+        await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Associe o motivo de bloqueio desejado."] > div > button[type="button"]').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Cancelado/Inativo'}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
