@@ -22,7 +22,7 @@ export default class BotNovo {
     cidadeDeAtendimento: Locator;
     buscarOperadores: Locator;
     abaFilaEspera: Locator;
-
+    botaoAcoesConexoesCliente: Locator;
     exportarCSV: Locator;
 
     botaoConversaEnviarAudio: Locator;
@@ -100,7 +100,9 @@ export default class BotNovo {
     botaoConversaCopiarLink: Locator;
     botaoConversaDarPlayAudio: Locator;
     botaoConversaPausarAudio: Locator;
-    
+    botaoAcoesCadastroCliente: Locator;
+    botaoAcoes: Locator;
+
     constructor(page: Page, navegador: BrowserContext) {
 
         this.page = page;
@@ -180,11 +182,34 @@ export default class BotNovo {
         this.botaoGerenciarTagsDentroDaConversaBuscarTag = this.page.getByPlaceholder('Clique para buscar');
         this.botaoGerenciarTagsDentroDaConversaEditarTag = this.page.getByRole('button').nth(2);
         this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag = this.page.locator('div:nth-child(44) > div > #confirmation').last();
-
-
-
+        this.botaoAcoesCadastroCliente =  this.page.locator('div').filter({ hasText: /^Cadastro do cliente$/ }).first();
+        this.botaoAcoes = this.page.locator('.ml-4').first();
+        this.botaoAcoesConexoesCliente = this.page.locator('div').filter({ hasText: /^Conexões do cliente$/ }).first();
 
     };
+
+    @step('Adicionar mensagens vindas do WebSocket')
+    async registrarMensagensWebsocket(mensagem: string) {
+        this.websocket.push(mensagem);
+    }
+
+    @step('Acessar cadastro de pessoas')
+    async acessarCadastroCliente() {
+        const cadastroDePessoasPagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesCadastroCliente.click();
+        const cadastroDePessoasPage = await cadastroDePessoasPagePromise;
+        return cadastroDePessoasPage;        
+    }
+
+    @step('Acessar conexões do cliente')
+    async acessarConexoesCliente() {
+        const conexoesClientePagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesConexoesCliente.click();
+        const conexoesClientePage = await conexoesClientePagePromise;
+        return conexoesClientePage;
+    };        
 
     @step('Limpar conversa')
     async limparConversa() {
