@@ -102,6 +102,7 @@ export default class BotNovo {
     botaoConversaPausarAudio: Locator;
     botaoAcoesCadastroCliente: Locator;
     botaoAcoes: Locator;
+    botaoAcoesEnviarEmail: Locator;
 
     constructor(page: Page, navegador: BrowserContext) {
 
@@ -185,7 +186,7 @@ export default class BotNovo {
         this.botaoAcoesCadastroCliente =  this.page.locator('div').filter({ hasText: /^Cadastro do cliente$/ }).first();
         this.botaoAcoes = this.page.locator('.ml-4').first();
         this.botaoAcoesConexoesCliente = this.page.locator('div').filter({ hasText: /^Conexões do cliente$/ }).first();
-
+        this.botaoAcoesEnviarEmail = this.page.locator('div').filter({ hasText: /^Enviar e-mail$/ }).first();
     };
 
     @step('Adicionar mensagens vindas do WebSocket')
@@ -387,7 +388,7 @@ export default class BotNovo {
         await this.page.waitForTimeout(3000);
         await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
 
-        }
+    }
 
     @step('Editar tag')
     async editarTag() {
@@ -452,6 +453,15 @@ export default class BotNovo {
         await this.page.getByLabel('Telefone com DDD *').fill('(51) 9802-65275');
         await this.page.getByRole('button', { name: 'Salvar' }).click();
     }
+
+    @step('Abrir aba de email')
+    async enviarEmail() {
+        const enviarEmailPagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesEnviarEmail.click();
+        const enviarEmailPage = await enviarEmailPagePromise
+        return enviarEmailPage;
+    };
 
     @step('Remover contato')
     async acessarMenuCadastroPessoas() {

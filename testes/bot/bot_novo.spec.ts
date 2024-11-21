@@ -102,8 +102,12 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
-                await conexoesClientePage.waitForTimeout(2000)
-                if (await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('//div[@class="webix_ss_center"]').innerText() === '(NENHUM REGISTRO)') {
+ 
+                await conexoesClientePage.waitForTimeout(2000);
+
+                const semRegistro = expect(conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().getByText('(NENHUM REGISTRO)', {exact: true})).toBeHidden();
+
+                if (semRegistro != null) {
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Conexões de cobrança bloqueadas deste cliente'}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div[class="webix_ss_center"] div:nth-child(3) div:nth-child(1)').click(); 
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Desbloqueio de conexões"}).click();
@@ -112,8 +116,10 @@ test.describe('Ações', () => {
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Conexões de cobrança ativas deste cliente"}).click();  
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click();
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Associe o motivo de bloqueio desejado."] > div > button[type="button"]').first().click();
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Cancelado/Inativo'}).first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
@@ -122,7 +128,7 @@ test.describe('Ações', () => {
                 
                 else {
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click(); 
-        await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
+                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Associe o motivo de bloqueio desejado."] > div > button[type="button"]').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Cancelado/Inativo'}).click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
@@ -130,6 +136,39 @@ test.describe('Ações', () => {
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
                     await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
                 }
+
+            });
+        });
+        test('Adicionar redução de velocidade', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
+                // fazer esse carinha aqui pelo banco de dados
+            })
+        });
+
+    })
+    test.describe('Emails', () => {
+        test('Enviar email', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.enviarEmail().then(async (enviarEmailPage) => {
+                await enviarEmailPage.waitForLoadState('load')
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('input[title="Título do email."]').click();
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('input[title="Título do email."]').pressSequentially(faker.lorem.sentence());
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe[title="Área de texto formatado\\. Pressione ALT-F9 para exibir o menu\\, ALT-F10 para exibir a barra de ferramentas ou ALT-0 para exibir a ajuda"]').contentFrame().locator('html').click();
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe[title="Área de texto formatado\\. Pressione ALT-F9 para exibir o menu\\, ALT-F10 para exibir a barra de ferramentas ou ALT-0 para exibir a ajuda"]').contentFrame().locator('html').pressSequentially(faker.lorem.paragraph());
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('input[title="Marque para confirmar o interesse em enviar o email agora."]').first().click();
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para enviar o email.'}).first().click();
+            });
+        });
+        test('Visualizar coringas', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.enviarEmail().then(async (enviarEmailPage) => {
+                await enviarEmailPage.waitForLoadState('load');
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para visualizar os coringas disponíveis.'}).first().click();
+                expect(enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(5).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[class="HTMLMemo"]')).toBeVisible();
             });
         });
     })
