@@ -2,6 +2,7 @@ import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test"
 import step from "../../../utilitarios/decorators";
 import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
+import { faker } from "@faker-js/faker/locale/pt_BR";
 
 export default class BotNovo {
 
@@ -20,7 +21,8 @@ export default class BotNovo {
     canalDeAtendimento: Locator;
     cidadeDeAtendimento: Locator;
     buscarOperadores: Locator;
-
+    abaFilaEspera: Locator;
+    botaoAcoesConexoesCliente: Locator;
     exportarCSV: Locator;
 
     botaoConversaEnviarAudio: Locator;
@@ -53,7 +55,7 @@ export default class BotNovo {
     botaoConversaConfirmarConvite: Locator;
     botaoConversaOpcoesRedefinirClienteSalvarConfirma: Locator;
     campoDePesquisaBuscarPorCodigo: Locator;
-    toastDeSucessoContratoRedefinido: Locator;
+    toastDeSucessoContatoRedefinido: Locator;
     toastDeSucessoRespostaPadraoExcluida: Locator;
     toastDeSucessoRespostaPadraoCriada: Locator;
     toastDeSucessoRespostaPadraoEditada: Locator;
@@ -62,6 +64,32 @@ export default class BotNovo {
     toastDeSucessoDevolverConversaParaFila: Locator;
     toastDeSucessoCopiarLink: Locator;
     botaoFecharModal: Locator;
+    botaoDevolverParaFila: Locator;
+    confirmarDevolucaoFila: Locator;
+    devolverParaFilaDefinitivamente: Locator;
+    toastDeSucessoDevolverParaFila: Locator;
+    botaoResgatarDaFila: Locator;
+    toastResgateEfetuado: Locator;
+    botaoSairConversa: Locator;
+    confirmarSaidaConversa: Locator;
+    sairConversaDefinitivamente: Locator;
+    toastDeErroSaidaOperador: Locator;
+    botaoTransferirParaSetor: Locator;
+    buscarSetor: Locator;
+    confirmarTransferenciaSetor: Locator;
+    botaoGerenciarTagsDentroDaConversa: Locator;
+    botaoGerenciarTagsDentroDaConversaCriarTag: Locator;
+    botaoGerenciarTagsDentroDaConversaDescricao: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDaTag: Locator;
+    botaoGerenciarTagsDentroDaConversaCorDoTexto: Locator;
+    botaoGerenciarTagsDentroDaConversaSalvar: Locator;
+    botaoCorDaTagConfirma: Locator;
+    botaoGerenciarTagsDentroDaConversaBuscarTag: Locator;
+    botaoGerenciarTagsDentroDaConversaEditarTag: Locator;
+    botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag: Locator;
+
     botaoConfirmar: Locator;
     botaoConversaOpcoesDevolverParaFila: Locator;
     primeiraMensagemDaConversa: Locator;
@@ -72,7 +100,9 @@ export default class BotNovo {
     botaoConversaCopiarLink: Locator;
     botaoConversaDarPlayAudio: Locator;
     botaoConversaPausarAudio: Locator;
-    
+    botaoAcoesCadastroCliente: Locator;
+    botaoAcoes: Locator;
+
     constructor(page: Page, navegador: BrowserContext) {
 
         this.page = page;
@@ -112,13 +142,12 @@ export default class BotNovo {
         this.botaosalvarRespostaPadrao = this.page.getByRole('button', { name: 'Salvar' });
         this.cadastroGrupoRespostaPadrao = this.page.getByPlaceholder('Clique para preencher');
         this.cadastroMensagemRespostaPadrao = this.page.getByLabel('Mensagem *');
-        this.botaoFecharMenuRespostasPadrao = this.page.locator('[id="radix-\\:rov\\:"] > .w-12').nth(0);
         this.botaoConversaOpcoesRedefinirCliente = this.page.getByText('Redefinir cliente');
         this.botaoConversaOpcoesRedefinirClienteBuscarCliente = this.page.getByPlaceholder('Clique para buscar por código');
         this.botaoConversaOpcoesRedefinirClienteSalvar = this.page.getByRole('button', { name: 'Redefinir cliente' });
         this.botaoConversaOpcoesRedefinirClienteSalvarConfirma = this.page.getByRole('button', { name: 'Confirmar' });
         this.campoDePesquisaBuscarPorCodigo = this.page.getByPlaceholder('Clique para buscar por código').first()
-        this.toastDeSucessoContratoRedefinido = this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2);
+        this.toastDeSucessoContatoRedefinido = this.page.locator('div').filter({ hasText: /^Sucesso!O contato foi redefinido!$/ }).nth(2);
         this.toastDeSucessoRespostaPadraoExcluida = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão excluída com sucesso!$/ }).nth(2);
         this.botaoExcluirRespostaPadrao = this.page.getByRole('button', { name: 'Excluir' });
         this.toastDeSucessoRespostaPadraoCriada = this.page.locator('div').filter({ hasText: /^Sucesso!Mensagem padrão criada com sucesso!$/ }).nth(2);
@@ -126,28 +155,61 @@ export default class BotNovo {
         this.botaoConversaOpcoesConvidarOperador = this.page.getByRole('button', { name: 'Convidar p/ o chat' });
         this.botaoConversaConfirmarConvite = page.getByRole('button', { name: 'Convidar' });
         this.toastDeSucessoConviteOperador = this.page.locator('div').filter({ hasText: /^Sucesso!Convite enviado com sucesso!$/ }).nth(2);
-        this.botaoConversaOpcoesTransferirAtendimentoSetor = this.page.getByText('Transferir p/ setor');
-        this.botaoConversaFazerDownloadCopiarLink = this.page.getByTestId('MoreVertOutlinedIcon');
-        this.botaoConversaExcluirAudio = this.page.locator('.hidden > button > button');
+        this.botaoDevolverParaFila = this.page.getByRole('button', { name: 'Devolver para a fila' });
+        this.confirmarDevolucaoFila = this.page.getByLabel('Estou ciente que esta ação nã');
+        this.devolverParaFilaDefinitivamente = this.page.getByRole('button', { name: 'Confirmar' });
+        this.toastDeSucessoDevolverParaFila = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado devolvido para a fila com sucesso!$/ }).nth(1)
+        this.abaFilaEspera = this.page.getByRole('tab', { name: 'Fila em espera' });
+        this.botaoResgatarDaFila = this.page.getByRole('row', { name: /\b(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}\b/ }).getByRole('button').last();
+        this.toastResgateEfetuado = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado resgatado com sucesso\.$/ }).nth(2);
+        this.botaoSairConversa = this.page.getByRole('button', { name: 'Sair da conversa' });
+        this.confirmarSaidaConversa = this.page.getByLabel('Estou ciente que esta ação nã');
+        this.sairConversaDefinitivamente = this.page.getByRole('button', { name: 'Sair' });
+        this.toastDeErroSaidaOperador = this.page.locator('div').filter({ hasText: /^Atenção!Não é possível sair da conversa sendo o único operador!$/ }).nth(2);
+        this.botaoTransferirParaSetor = this.page.getByText('Transferir p/ setor');
+        this.buscarSetor = this.page.getByPlaceholder('Buscar setor');
+        this.confirmarTransferenciaSetor = this.page.getByRole('button', { name: 'Transferir atendimento' });
         this.toastDeSucessoTransferenciaSetor = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado transferido para o setor com sucesso!$/ }).nth(2);
-        this.toastDeSucessoDevolverConversaParaFila = this.page.locator('div').filter({ hasText: /^Sucesso!Chamado devolvido para a fila com sucesso!$/ }).nth(2);
-        this.botaoConfirmar = this.page.getByRole('button', { name: 'Confirmar' });
-        this.primeiraMensagemDaConversa = this.page.locator('footer');
-        this.botaoConversaOpcoesDevolverParaFila = this.page.getByRole('button', { name: 'Devolver para a fila' });
-        this.botaoConversaGravarAudio = this.page.locator('.flex > button > .h-9');
-        this.botaoConversaPararGravacaoAudio = this.botaoConversaGravarAudio;
-        this.botaoConversaFazerDownloadAudio = this.page.getByRole('button', { name: 'Download' })
-        this.botaoConversaCopiarLink = this.page.getByRole('button', { name: 'Copiar link' })
-        this.toastDeSucessoCopiarLink = this.page.locator('div').filter({ hasText: /^Link copiado com sucesso!$/ }).nth(2)
-        this.botaoConversaDarPlayAudio = this.page.locator('.hidden > div > button > .h-6');
-        this.botaoConversaPausarAudio = this.botaoConversaDarPlayAudio;
+        this.botaoGerenciarTagsDentroDaConversa = this.page.locator('button').filter({ hasText: 'Gerenciar tags' }).nth(1);
+        this.botaoGerenciarTagsDentroDaConversaCriarTag = this.page.getByRole('button', { name: 'Criar nova tag' }).nth(1);
+        this.botaoGerenciarTagsDentroDaConversaDescricao = this.page.locator('input[name="nome"]');
+        this.botaoGerenciarTagsDentroDaConversaCorDaTag = this.page.getByRole('button').nth(1);
+        this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal = this.page.locator('input[name="corTag"]');
+        this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal = this.page.locator('input[name="corTexto"]');
+        this.botaoGerenciarTagsDentroDaConversaCorDoTexto = this.page.getByRole('button').nth(2);
+        this.botaoCorDaTagConfirma = this.page.getByRole('button', { name: 'Aplicar' });
+        this.botaoGerenciarTagsDentroDaConversaSalvar = this.page.getByRole('button', { name: 'Salvar' });
+        this.botaoGerenciarTagsDentroDaConversaBuscarTag = this.page.getByPlaceholder('Clique para buscar');
+        this.botaoGerenciarTagsDentroDaConversaEditarTag = this.page.getByRole('button').nth(2);
+        this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag = this.page.locator('div:nth-child(44) > div > #confirmation').last();
+        this.botaoAcoesCadastroCliente =  this.page.locator('div').filter({ hasText: /^Cadastro do cliente$/ }).first();
+        this.botaoAcoes = this.page.locator('.ml-4').first();
+        this.botaoAcoesConexoesCliente = this.page.locator('div').filter({ hasText: /^Conexões do cliente$/ }).first();
+
     };
 
-    @step('Registrar mensagens do websocket')
-    async registrarMensagensWebsocket(mensagem: string){
+    @step('Adicionar mensagens vindas do WebSocket')
+    async registrarMensagensWebsocket(mensagem: string) {
         this.websocket.push(mensagem);
-        console.log('mensagem resgistrada: ', mensagem);
     }
+
+    @step('Acessar cadastro de pessoas')
+    async acessarCadastroCliente() {
+        const cadastroDePessoasPagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesCadastroCliente.click();
+        const cadastroDePessoasPage = await cadastroDePessoasPagePromise;
+        return cadastroDePessoasPage;        
+    }
+
+    @step('Acessar conexões do cliente')
+    async acessarConexoesCliente() {
+        const conexoesClientePagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesConexoesCliente.click();
+        const conexoesClientePage = await conexoesClientePagePromise;
+        return conexoesClientePage;
+    };        
 
     @step('Limpar conversa')
     async limparConversa() {
@@ -227,7 +289,7 @@ export default class BotNovo {
         await this.cadastroMensagemRespostaPadrao.pressSequentially('Olá #nome! Este é um teste de resposta padrão com acentuação, coringa e emoji 😉😊💚🥰💛😅. Você está recebendo seu protocolo que é: #protocolo.');
         await this.botaosalvarRespostaPadrao.click();
         await expect(this.toastDeSucessoRespostaPadraoCriada).toBeVisible();
-        //await this.botaoFecharMenuRespostasPadrao.click();
+        await this.botaoFecharModal.click();
     }
 
     @step('Excluir resposta padrão')
@@ -252,7 +314,7 @@ export default class BotNovo {
         await expect(this.toastDeSucessoConviteOperador ).toBeVisible();
     }
 
-    @step('Redefinir contato já identificado')
+    @step('Redefinir contato identificado')
     async redefinirContato() {
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
@@ -262,16 +324,98 @@ export default class BotNovo {
         await this.page.getByText('teste banco dados').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
-        await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
+        await expect(this.toastDeSucessoContatoRedefinido).toBeVisible();
         await this.botaoConversaOpcoes.click();
         await this.botaoConversaOpcoesRedefinirCliente.click();
         await this.botaoConversaOpcoesRedefinirClienteBuscarCliente.click();
         await this.campoDePesquisaBuscarPorCodigo.click();
         await this.campoDePesquisaBuscarPorCodigo.pressSequentially('teste caroline');
-        await this.page.getByText('teste caroline').first().click();
+        await this.page.getByText('1107 - Teste Caroline').first().click();
         await this.botaoConversaOpcoesRedefinirClienteSalvar.click();
         await this.botaoConversaOpcoesRedefinirClienteSalvarConfirma.click();
-        await expect(this.toastDeSucessoContratoRedefinido).toBeVisible();
+        await expect(this.toastDeSucessoContatoRedefinido).toBeVisible();
+    }
+
+    @step('Devolver conversa para fila')
+    async devolverParaFila() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoDevolverParaFila.click();
+        await this.confirmarDevolucaoFila.click();
+        await this.devolverParaFilaDefinitivamente.click();
+        // await expect(this.toastDeSucessoDevolverParaFila).toBeVisible();
+        await this.abaFilaEspera.click();
+        await this.page.waitForTimeout(2000);
+        await this.botaoResgatarDaFila.click();
+        // await expect(this.toastResgateEfetuado).toBeVisible();
+    }
+
+    @step('Sair da conversa com apenas um operador')
+    async sairConversaUnicoOperador() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoSairConversa.click();
+        await this.confirmarSaidaConversa.click();
+        await this.sairConversaDefinitivamente.click();
+        await expect(this.toastDeErroSaidaOperador).toBeVisible();
+    }
+
+    @step('Transferir para setor')
+    async transferirParaSetor() {
+        await this.botaoConversaOpcoes.click();
+        await this.botaoTransferirParaSetor.click();
+        await this.buscarSetor.click();
+        await this.buscarSetor.pressSequentially('financeiro');
+        await this.page.getByRole('row', { name: 'Financeiro-TESTE' }).locator('label').click();
+        await this.page.getByRole('row', { name: 'Financeiro-TESTE' }).locator('label').click();
+        await this.confirmarTransferenciaSetor.click();
+        await expect (this.toastDeSucessoTransferenciaSetor).toBeVisible();
+        await this.abaFilaEspera.click();
+        await this.page.waitForTimeout(2000);
+        await this.botaoResgatarDaFila.click();
+    }
+
+    @step('Criar tag')
+    async criarTag() {
+        //Cor e API que dará o retorno 200. Vincular e desvincular a tag recém criada. Tem verificação?
+        await this.botaoGerenciarTagsDentroDaConversa.click();
+        await this.botaoGerenciarTagsDentroDaConversaCriarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.pressSequentially(faker.animal.cat());
+        await this.page.getByText('Selecione uma cor').click({ position: { x: 0, y: 0 } });
+        await this.botaoCorDaTagConfirma.click();
+        await this.botaoGerenciarTagsDentroDaConversaSalvar.click();
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+        await this.page.waitForTimeout(3000);
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+
+        }
+
+    @step('Editar tag')
+    async editarTag() {
+        //tem que ajustar a criação da tag e depois adicionar aqui a criação de uma tag com o nome Teste Edição pra ela ser editada sempre
+        await this.botaoGerenciarTagsDentroDaConversa.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.pressSequentially('Teste Edição');
+        await this.botaoGerenciarTagsDentroDaConversaEditarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.click();
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaDescricao.pressSequentially(faker.food.vegetable());
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.click();
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaCorDaTagHexadecimal.pressSequentially(faker.color.rgb({ format: 'hex', casing: 'lower' }));
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.click();
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaCorDoTextoHexadecimal.pressSequentially(faker.color.rgb({ format: 'hex', casing: 'lower' }));
+        await this.botaoGerenciarTagsDentroDaConversaSalvar.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.click();
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.press('Control+A');
+        await this.botaoGerenciarTagsDentroDaConversaBuscarTag.press('Backspace');
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+        await this.page.waitForTimeout(3000);
+        await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
+        
     }
     
     @step('Transferir para setor')
