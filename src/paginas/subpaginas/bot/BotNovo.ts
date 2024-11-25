@@ -1,3 +1,11 @@
+/**
+o verdadeiro campeão é aquele que acredita na vitória, mesmo quando ela parece impossível.
+
+no caso, a gente só perdeu aqui 🫠😭
+
+mas a verdadeira vitória são os amigos que fizemos pelo caminho
+*/
+
 import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
 import { getRandomChampion } from "../../../utilitarios/api/championlist";
@@ -103,6 +111,7 @@ export default class BotNovo {
     botaoAcoesCadastroCliente: Locator;
     botaoAcoes: Locator;
     botaoAcoesEnviarEmail: Locator;
+    botaoAcoesFinanceiro: Locator;
 
     constructor(page: Page, navegador: BrowserContext) {
 
@@ -187,6 +196,7 @@ export default class BotNovo {
         this.botaoAcoes = this.page.locator('.ml-4').first();
         this.botaoAcoesConexoesCliente = this.page.locator('div').filter({ hasText: /^Conexões do cliente$/ }).first();
         this.botaoAcoesEnviarEmail = this.page.locator('div').filter({ hasText: /^Enviar e-mail$/ }).first();
+        this.botaoAcoesFinanceiro = this.page.locator('div').filter({ hasText: /^Financeiro$/ }).first();
     };
 
     @step('Adicionar mensagens vindas do WebSocket')
@@ -477,7 +487,6 @@ export default class BotNovo {
         await this.page.getByPlaceholder('Escreva uma mensagem').click();
         await this.page.getByPlaceholder('Escreva uma mensagem').pressSequentially(mensagem);
         await this.page.locator('slot').filter({ hasText: mensagem }).getByRole('button').nth(3).click();
-        console.log('Campeao gerado: ', getRandomChampion());
         expect(this.websocket[0]).toBe(mensagem);
     }
 
@@ -521,6 +530,15 @@ export default class BotNovo {
         await expect(this.toastDeSucessoCopiarLink).toBeVisible();
     }
     
+    @step('Acessar página do financeiro dentro do bot')
+    async acessarFinanceiro(){
+        const financeiroPagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesFinanceiro.click();
+        const financeiroPage = await financeiroPagePromise;
+        return financeiroPage;        
+    } 
+
     @step('Ouvir o audio antes de enviar ele para a conversa')
     async ouvirAudio() {
         await this.gravarAudio(10);
