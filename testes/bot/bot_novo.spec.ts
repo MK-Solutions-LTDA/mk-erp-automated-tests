@@ -192,36 +192,16 @@ test.describe('Ações', () => {
                 await financeiroPage.criarContrato();
                 await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
                 await financeiroPage.ativarContrato();
-                await financeiroPage.aguardar(1500);
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para finalizar'}).last().click();
-            })                    
+           })                    
         })
         
         test('Suspender contrato', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Novo contrato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div:nth-child(29) > div:nth-child(2) > div > button').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').nth(4).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Concluir'}).last().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('div[class="mk-form-fechar"]').first().click();
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().getByRole('gridcell', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Suspender contrato'}).first().click();
+                await financeiroPage.criarContrato();     
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.suspenderContrato();
                 await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Informe por qual motivo o cliente deseja solicitar esta suspensão."]').click();
                 await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Dificuldades financeiras'}).first().click();
                 await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
@@ -232,84 +212,24 @@ test.describe('Ações', () => {
                 await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
             })
         });
+
         test('Cancelar suspensão de contrato', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Novo contrato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div:nth-child(29) > div:nth-child(2) > div > button').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').nth(4).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Concluir'}).last().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('div[class="mk-form-fechar"]').first().click();
-                await financeiroPage.waitForTimeout(5000);
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().getByRole('gridcell', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Suspender contrato'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Informe por qual motivo o cliente deseja solicitar esta suspensão."]').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Dificuldades financeiras'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('textbox', {name: 'Data de agendamento do bloqueio de conexão.'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('textbox', {name: 'Data de agendamento do bloqueio de conexão.'}).first().pressSequentially(faker.date.future().toLocaleDateString());
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().getByRole('gridcell', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Cancelar suspensão'}).first().click();
-                financeiroPage.on('dialog', async (dialog) => {
-                    await dialog.accept();
-                });
+                await financeiroPage.criarContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.suspenderContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.cancelarSuspensaoContrato();     
             });
-
         });
         test('Cancelar contrato', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Novo contrato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div:nth-child(29) > div:nth-child(2) > div > button').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próximo'}).first().click();
-                await financeiroPage.waitForTimeout(1500)
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').nth(4).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Concluir'}).last().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('div[class="mk-form-fechar"]').first().click();
-                await financeiroPage.waitForTimeout(5000);
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().getByRole('gridcell', {name: 'FRAÇÃO'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Cancelar contrato'}).first().click();
-                await financeiroPage.waitForTimeout(1500);
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//div[@title="Selecione um motivo de cancelamento."]//div//button[@type="button"]').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Concorrência'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.waitForTimeout(1500);
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.waitForTimeout(1500);
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').nth(3).check();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para finalizar'}).first().click();
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
+                await financeiroPage.criarContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');  
             });
         });
 
@@ -340,6 +260,7 @@ test.describe('Ações', () => {
                 await financeiroPage.waitForLoadState('load');
             });
         })
+        
         test('Inserir comentário na fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
