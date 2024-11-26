@@ -119,6 +119,82 @@ export default class FinanceiroBotPage {
         await this.page.waitForLoadState('load');
     }
 
+    @step('Enviar fatura no chat')
+    async enviarFaturaNoChat() {
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Enviar fatura ao chat'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        })
+    }
+
+    @step('Dar baixa na fatura')
+    async darBaixaFatura() {    
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Baixar fatura selecionada'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+        await this.page.reload();
+        await this.page.waitForLoadState('load');
+    };
+
+    @step('Remover fatura')
+    async removerFatura() {
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().pressSequentially('Fração');
+        await this.page.waitForTimeout(1500);
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Remover fatura'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//input[@title="Informações adicionais que explicam o motivo dessa liquidação."]').click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//input[@title="Informações adicionais que explicam o motivo dessa liquidação."]').pressSequentially(faker.lorem.sentences());
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().check();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        })
+        await this.page.reload();
+        await this.page.waitForLoadState('load');
+    }
+
+    @step('Inserir comentário na fatura')
+    async inserirComentarioNaFatura() {
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Inserir comentários na fatura.'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//textarea[@id="WFRInput847333"]').click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//textarea[@id="WFRInput847333"]').pressSequentially(faker.lorem.sentences());
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').check();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Gravar comentário'}).click();
+    }         
+
+    @step('Suspender conta')
+    async suspenderConta() {
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().pressSequentially('Fração');
+        await this.page.waitForTimeout(1500);
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').nth(1).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Suspender fatura'}).first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//div[@title="Selecione o motivo de suspensão para a geração de índices e categorização."]//div//button[@type="button"]').click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Dificuldades Financeiras'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().check();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para executar o procedimento.'}).first().click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+        await this.page.reload();
+        await this.page.waitForLoadState('load');
+    };
+    @step('Imprimir fatura')
+    async imprimirFatura(){
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
+        await this.page.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Imprimir fatura'}).click();
+    }
+
     @step('Clicar na primeira fatura na grade')
     async clicarPrimeiraFaturaNaGrade(nomeNaCelula: string) {
         await this.gridPrincipal.getByRole('gridcell', {name: nomeNaCelula}).first().click();

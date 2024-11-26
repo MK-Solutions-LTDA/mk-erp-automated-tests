@@ -202,14 +202,6 @@ test.describe('Ações', () => {
                 await financeiroPage.criarContrato();     
                 await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
                 await financeiroPage.suspenderContrato();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Informe por qual motivo o cliente deseja solicitar esta suspensão."]').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Dificuldades financeiras'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('textbox', {name: 'Data de agendamento do bloqueio de conexão.'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('textbox', {name: 'Data de agendamento do bloqueio de conexão.'}).first().pressSequentially(faker.date.future().toLocaleDateString());
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Próxima etapa'}).first().click();
             })
         });
 
@@ -230,6 +222,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
                 await financeiroPage.criarContrato();
                 await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');  
+                await financeiroPage.cancelarContrato();
             });
         });
 
@@ -237,12 +230,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Enviar fatura ao chat'}).click();
-                financeiroPage.on('dialog', async (dialog) => {
-                    await dialog.accept();
-                })
+                await financeiroPage.enviarFaturaNoChat();
             });
         });
 
@@ -250,14 +238,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Baixar fatura selecionada'}).click();
-                financeiroPage.on('dialog', async (dialog) => {
-                    await dialog.accept();
-                });
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
+                await financeiroPage.darBaixaFatura();
             });
         })
         
@@ -265,13 +246,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Inserir comentários na fatura.'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//textarea[@id="WFRInput847333"]').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//textarea[@id="WFRInput847333"]').pressSequentially(faker.lorem.sentences());
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').check();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Gravar comentário'}).click();
+                await financeiroPage.inserirComentarioNaFatura();
             });
         });
         
@@ -279,20 +254,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().pressSequentially('Fração');
-                await financeiroPage.waitForTimeout(1500);
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Remover fatura'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//input[@title="Informações adicionais que explicam o motivo dessa liquidação."]').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//input[@title="Informações adicionais que explicam o motivo dessa liquidação."]').pressSequentially(faker.lorem.sentences());
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().check();
-                financeiroPage.on('dialog', async (dialog) => {
-                    await dialog.accept();
-                })
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
+                await financeiroPage.removerFatura();
             });
         });
 
@@ -300,30 +262,15 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('xpath=//tbody/tr[@role="row"]/td[5]/div[1]/input[1]').first().pressSequentially('Fração');
-                await financeiroPage.waitForTimeout(1500);
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').nth(1).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Suspender fatura'}).first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('xpath=//div[@title="Selecione o motivo de suspensão para a geração de índices e categorização."]//div//button[@type="button"]').click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Dificuldades Financeiras'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().check();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para executar o procedimento.'}).first().click();
-                financeiroPage.on('dialog', async (dialog) => {
-                    await dialog.accept();
-                });
-                await financeiroPage.reload();
-                await financeiroPage.waitForLoadState('load');
+                await financeiroPage.suspenderConta();
             });
         });
+
         test('Imprimir fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Faturas a receber deste contato'}).click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('.webix_cell > .webixtype_base').first().click();
-                await financeiroPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Imprimir fatura'}).click();
+                await financeiroPage.imprimirFatura();
             });
         });
     });
