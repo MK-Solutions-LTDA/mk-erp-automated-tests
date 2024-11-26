@@ -11,6 +11,7 @@ import step from "../../../utilitarios/decorators";
 import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
 import { faker } from "@faker-js/faker/locale/pt_BR";
+import FinanceiroBotPage from "./financeiro/FinanceiroBotPage";
 
 export default class BotNovo {
 
@@ -536,7 +537,7 @@ export default class BotNovo {
         this.botaoAcoes.click();
         this.botaoAcoesFinanceiro.click();
         const financeiroPage = await financeiroPagePromise;
-        return financeiroPage;        
+        return new FinanceiroBotPage(financeiroPage);        
     } 
 
     @step('Ouvir o audio antes de enviar ele para a conversa')
