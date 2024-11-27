@@ -12,6 +12,7 @@ import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import FinanceiroBotPage from "./financeiro/FinanceiroBotPage";
+import ConexoesClientePage from "./conexoes/ConexoesClientePage";
 
 export default class BotNovo {
 
@@ -220,7 +221,7 @@ export default class BotNovo {
         this.botaoAcoes.click();
         this.botaoAcoesConexoesCliente.click();
         const conexoesClientePage = await conexoesClientePagePromise;
-        return conexoesClientePage;
+        return new ConexoesClientePage(conexoesClientePage);
     };        
 
     @step('Limpar conversa')
