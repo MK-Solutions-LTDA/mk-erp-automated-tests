@@ -251,6 +251,60 @@ test.describe('Ações', () => {
                 await financeiroPage.editarDocumentoFiscal();
             });
         })
+        
+        test('Imprimir documentos fiscais da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => { 
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.imprimirDocumentoFiscal();
+            });
+        });
+
+        test('Anular documento fiscal', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {   
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.anularDocumentoFiscal();
+            });
+        });
+
+        test('Cancelar documento fiscal', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.cancelarDocumentoFiscal();
+            });
+        });
+
+        test('Gerar documentos fiscais da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.gerarDocumentosFiscaisDaConta();
+            });
+        })
+
+        test('Enviar negativas de débito por e-mail', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.enviarNegativasDeDebitoPorEmail();
+            });
+        });
+
+        test('Imprimir negativas de débito', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {});
+
+        test('Gerar nova negativas de débito', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {});
+    });
+
+    test.describe('Workspace', () => {
+
+        test('Criar um atendimento preenchendo todos os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarWorkspace().then(async (workspacePage) => {});
+        });
+
     });
 });
 

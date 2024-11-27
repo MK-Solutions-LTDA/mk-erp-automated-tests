@@ -13,6 +13,7 @@ import { expect } from "../../../utilitarios/fixtures/base";
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import FinanceiroBotPage from "./financeiro/FinanceiroBotPage";
 import ConexoesClientePage from "./conexoes/ConexoesClientePage";
+import WorkspacePage from "./workspace/WorkspacePage";
 
 export default class BotNovo {
 
@@ -114,6 +115,7 @@ export default class BotNovo {
     botaoAcoes: Locator;
     botaoAcoesEnviarEmail: Locator;
     botaoAcoesFinanceiro: Locator;
+    botaoAcoesWorkspace: Locator;
 
     constructor(page: Page, navegador: BrowserContext) {
 
@@ -199,6 +201,7 @@ export default class BotNovo {
         this.botaoAcoesConexoesCliente = this.page.locator('div').filter({ hasText: /^Conexões do cliente$/ }).first();
         this.botaoAcoesEnviarEmail = this.page.locator('div').filter({ hasText: /^Enviar e-mail$/ }).first();
         this.botaoAcoesFinanceiro = this.page.locator('div').filter({ hasText: /^Financeiro$/ }).first();
+        this.botaoAcoesWorkspace = this.page.locator('div').filter({ hasText: /^Atendimento do workspace$/ }).first();
     };
 
     @step('Adicionar mensagens vindas do WebSocket')
@@ -548,4 +551,14 @@ export default class BotNovo {
         await this.page.waitForTimeout(10 * 1000); // tempo de escuta do audio
         await this.botaoConversaPausarAudio.click();
     }
+
+    @step('Acessar workspace')
+    async acessarWorkspace() {
+        const workspacePagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesWorkspace.click();
+        const workspacePage = await workspacePagePromise;
+        return new WorkspacePage(workspacePage);        
+    }
+
 }

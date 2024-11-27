@@ -278,6 +278,78 @@ export default class FinanceiroBotPage {
 
     @step('Editar documento fiscal')
     async editarDocumentoFiscal() { 
-        
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais gerados'}).click();
+        await this.clicarPrimeiraFaturaNaGrade('Normal')
+        await this.gridPrincipal.getByRole('button', {name: 'Editar observações do documento fiscal.'}).click();                
+        await this.gridModal.locator('xpath=//textarea[@id="WFRInput840422"]').click();
+        await this.gridModal.locator('xpath=//textarea[@id="WFRInput840422"]').pressSequentially(faker.lorem.sentences());
+        await this.gridModal.locator('xpath=//div[@class="HTMLNavigationFormButton HTMLNavigationFormButton-pt_BR HTMLNavigationFormButton-EditSave-Over"]//a[@href="javascript:;"]//img[@title="Gravar registro (Ctrl+S)"]').click();
+        await this.gridModalBotaoFecharModal.click();
     }
+
+    @step('Imprimir documento fiscal')
+    async imprimirDocumentoFiscal() {
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais gerados'}).click();
+        await this.clicarPrimeiraFaturaNaGrade('Normal')
+        await this.gridPrincipal.getByRole('button', {name: 'Imprimir documento fiscal'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+              
+    }    
+
+    @step('Anular documento fiscal')
+    async anularDocumentoFiscal() {
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais pendentes'}).click();
+        await this.gridFinanceiro.locator('xpath=//tbody/tr[@role="row"]/td[6]/div[1]/input[1]').click();
+        await this.gridFinanceiro.locator('xpath=//tbody/tr[@role="row"]/td[6]/div[1]/input[1]').pressSequentially('FRAÇÃO');
+        await this.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+        await this.gridPrincipal.getByRole('button', {name: 'Clique para gerar os documentos fiscais desta fatura.'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais gerados'}).click();
+        await this.clicarPrimeiraFaturaNaGrade('Normal')
+        await this.gridPrincipal.getByRole('button', {name: 'Anular documento. Essa função remove o documento da base de dados.'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+    }
+
+    @step('Cancelar documento fiscal')
+    async cancelarDocumentoFiscal() {
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais pendentes'}).click();
+        await this.gridFinanceiro.locator('xpath=//tbody/tr[@role="row"]/td[6]/div[1]/input[1]').click();
+        await this.gridFinanceiro.locator('xpath=//tbody/tr[@role="row"]/td[6]/div[1]/input[1]').pressSequentially('FRAÇÃO');
+        await this.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+        await this.gridPrincipal.getByRole('button', {name: 'Clique para gerar os documentos fiscais desta fatura.'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais gerados'}).click();
+        await this.clicarPrimeiraFaturaNaGrade('Normal')
+        await this.gridPrincipal.getByRole('button', {name: 'Cancelar documento.'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+    }
+
+    @step('Gerar os documentos fiscais da conta')
+    async gerarDocumentosFiscaisDaConta() {
+        await this.gridPrincipal.getByRole('button', {name: 'Documentos fiscais pendentes'}).click();
+        await this.gridFinanceiro.locator('xpath=//tbody/tr[@role="row"]/td[6]/div[1]/input[1]').click();
+        await this.gridFinanceiro.locator('xpath=//tbody/tr[@role="row"]/td[6]/div[1]/input[1]').pressSequentially('FRAÇÃO');
+        await this.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+        await this.gridPrincipal.getByRole('button', {name: 'Clique para gerar os documentos fiscais desta fatura.'}).click();
+        this.page.on('dialog', async (dialog) => {
+            await dialog.accept();
+        });
+    }
+
+    @step('Enviar negativa de débito no email')
+    async enviarNegativasDeDebitoPorEmail() {
+        // implementar mais tarde, precisa ajustar a função de abrir uma nova conversa e deixar ela generica, usar o cadastro "teste de cadastro pelo CRM"
+    };
+
+    
 }
