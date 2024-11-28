@@ -1,8 +1,19 @@
+/**
+o verdadeiro campeão é aquele que acredita na vitória, mesmo quando ela parece impossível.
+
+no caso, a gente só perdeu aqui 🫠😭
+
+mas a verdadeira vitória são os amigos que fizemos pelo caminho
+*/
+
 import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
 import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
 import { faker } from "@faker-js/faker/locale/pt_BR";
+import FinanceiroBotPage from "./financeiro/FinanceiroBotPage";
+import ConexoesClientePage from "./conexoes/ConexoesClientePage";
+import WorkspacePage from "./workspace/WorkspacePage";
 
 export default class BotNovo {
 
@@ -102,6 +113,9 @@ export default class BotNovo {
     botaoConversaPausarAudio: Locator;
     botaoAcoesCadastroCliente: Locator;
     botaoAcoes: Locator;
+    botaoAcoesEnviarEmail: Locator;
+    botaoAcoesFinanceiro: Locator;
+    botaoAcoesWorkspace: Locator;
 
     constructor(page: Page, navegador: BrowserContext) {
 
@@ -185,7 +199,9 @@ export default class BotNovo {
         this.botaoAcoesCadastroCliente =  this.page.locator('div').filter({ hasText: /^Cadastro do cliente$/ }).first();
         this.botaoAcoes = this.page.locator('.ml-4').first();
         this.botaoAcoesConexoesCliente = this.page.locator('div').filter({ hasText: /^Conexões do cliente$/ }).first();
-
+        this.botaoAcoesEnviarEmail = this.page.locator('div').filter({ hasText: /^Enviar e-mail$/ }).first();
+        this.botaoAcoesFinanceiro = this.page.locator('div').filter({ hasText: /^Financeiro$/ }).first();
+        this.botaoAcoesWorkspace = this.page.locator('div').filter({ hasText: /^Atendimento do workspace$/ }).first();
     };
 
     @step('Adicionar mensagens vindas do WebSocket')
@@ -208,7 +224,7 @@ export default class BotNovo {
         this.botaoAcoes.click();
         this.botaoAcoesConexoesCliente.click();
         const conexoesClientePage = await conexoesClientePagePromise;
-        return conexoesClientePage;
+        return new ConexoesClientePage(conexoesClientePage);
     };        
 
     @step('Limpar conversa')
@@ -387,7 +403,7 @@ export default class BotNovo {
         await this.page.waitForTimeout(3000);
         await this.botaoGerenciarTagsDentroDaConversaVincularEDesvincularTag.click();
 
-        }
+    }
 
     @step('Editar tag')
     async editarTag() {
@@ -453,6 +469,15 @@ export default class BotNovo {
         await this.page.getByRole('button', { name: 'Salvar' }).click();
     }
 
+    @step('Abrir aba de email')
+    async enviarEmail() {
+        const enviarEmailPagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesEnviarEmail.click();
+        const enviarEmailPage = await enviarEmailPagePromise
+        return enviarEmailPage;
+    };
+
     @step('Remover contato')
     async acessarMenuCadastroPessoas() {
         await this.page.locator('.ml-4').click();
@@ -467,7 +492,6 @@ export default class BotNovo {
         await this.page.getByPlaceholder('Escreva uma mensagem').click();
         await this.page.getByPlaceholder('Escreva uma mensagem').pressSequentially(mensagem);
         await this.page.locator('slot').filter({ hasText: mensagem }).getByRole('button').nth(3).click();
-        console.log('Campeao gerado: ', getRandomChampion());
         expect(this.websocket[0]).toBe(mensagem);
     }
 
@@ -511,6 +535,15 @@ export default class BotNovo {
         await expect(this.toastDeSucessoCopiarLink).toBeVisible();
     }
     
+    @step('Acessar página do financeiro dentro do bot')
+    async acessarFinanceiro(){
+        const financeiroPagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesFinanceiro.click();
+        const financeiroPage = await financeiroPagePromise;
+        return new FinanceiroBotPage(financeiroPage);        
+    } 
+
     @step('Ouvir o audio antes de enviar ele para a conversa')
     async ouvirAudio() {
         await this.gravarAudio(10);
@@ -518,4 +551,14 @@ export default class BotNovo {
         await this.page.waitForTimeout(10 * 1000); // tempo de escuta do audio
         await this.botaoConversaPausarAudio.click();
     }
+
+    @step('Acessar workspace')
+    async acessarWorkspace() {
+        const workspacePagePromise = this.navegador.waitForEvent('page');
+        this.botaoAcoes.click();
+        this.botaoAcoesWorkspace.click();
+        const workspacePage = await workspacePagePromise;
+        return new WorkspacePage(workspacePage);        
+    }
+
 }

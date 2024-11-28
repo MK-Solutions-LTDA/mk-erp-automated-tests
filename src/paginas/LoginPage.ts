@@ -14,14 +14,12 @@ export class LoginPage {
 
 	@step('Realizando login no sistema')
 	async realizarLogin(user: string, pass: string) {
-		console.log('logando com user: ', user);
-		await this.page.waitForLoadState('domcontentloaded');
 		await this.page.locator('input[name="user"]').pressSequentially(user);
 		await this.page.locator('input[name="password"]').pressSequentially(pass);
 		await this.page.locator('#dataConnectionOpt').click();
-		await this.page.press('#dataConnectionOpt', 'ArrowDown');
-		await this.page.press('#dataConnectionOpt', 'ArrowDown');
-		await this.page.press('#dataConnectionOpt', 'Enter');
+		// await this.page.press('#dataConnectionOpt', 'ArrowDown');
+		// await this.page.press('#dataConnectionOpt', 'ArrowDown');
+		// await this.page.press('#dataConnectionOpt', 'Enter');
 		await this.page.click('button[name="user"]');
 		await this.page.waitForSelector('frame[name="mainsystem"]');
 		await this.page.waitForLoadState('load');

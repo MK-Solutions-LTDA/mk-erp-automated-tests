@@ -1,3 +1,5 @@
+// so quero deixar claro que esses testes sao o puro caos, nao tem nada de organizado e nem de bonito, mas funciona
+
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import Servicos from "../../src/utilitarios/servicos";
 import { expect, test } from "../../src/utilitarios/fixtures/base";
@@ -73,7 +75,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
-                await expect(conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell')).toBeVisible();
+                await conexoesClientePage.assertConexoesCliente();                
             });
         })
 
@@ -81,20 +83,7 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click(); 
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Alterações gerais"}).click();
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').press('Control+A');
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').press('Backspace');
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.next > button').first().click();
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div:nth-child(41) > button').click();
-                await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
-                conexoesClientePage.on('response', async (response) => {
-                    if (response.url().includes(`form.do`)) {
-                        expect(response.ok()).toBeTruthy();
-                    }
-                })
+                await conexoesClientePage.alterarConexaoCliente();
             })
         });
         
@@ -102,37 +91,230 @@ test.describe('Ações', () => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
             await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
-                await conexoesClientePage.waitForTimeout(2000)
-                if (await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('//div[@class="webix_ss_center"]').innerText() === '(NENHUM REGISTRO)') {
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Conexões de cobrança bloqueadas deste cliente'}).click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div[class="webix_ss_center"] div:nth-child(3) div:nth-child(1)').click(); 
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Desbloqueio de conexões"}).click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Conexões de cobrança ativas deste cliente"}).click();  
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
-                } 
-                
-                else {
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame().locator('div:nth-child(13) > .webix_cell').click(); 
-        await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: "Bloquear a conexão"}).click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[title="Associe o motivo de bloqueio desejado."] > div > button[type="button"]').first().click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('option', {name: 'Cancelado/Inativo'}).click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('textarea').pressSequentially(faker.lorem.sentences());
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().getByRole('checkbox').first().click();
-                    await conexoesClientePage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('.finish > button').first().click();
-                }
+                await conexoesClientePage.bloquearConexaoCliente();
+            });
+        });
+    
+        test('Adicionar redução de velocidade', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarConexoesCliente().then(async (conexoesClientePage) => {
+                // fazer esse carinha aqui pelo banco de dados
+            })
+        });
+
+    })
+    test.describe('Emails', () => {
+        test('Enviar email', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.enviarEmail().then(async (enviarEmailPage) => {
+                await enviarEmailPage.waitForLoadState('load')
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('input[title="Título do email."]').click();
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('input[title="Título do email."]').pressSequentially(faker.lorem.sentence());
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe[title="Área de texto formatado\\. Pressione ALT-F9 para exibir o menu\\, ALT-F10 para exibir a barra de ferramentas ou ALT-0 para exibir a ajuda"]').contentFrame().locator('html').click();
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe[title="Área de texto formatado\\. Pressione ALT-F9 para exibir o menu\\, ALT-F10 para exibir a barra de ferramentas ou ALT-0 para exibir a ajuda"]').contentFrame().locator('html').pressSequentially(faker.lorem.paragraph());
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('input[title="Marque para confirmar o interesse em enviar o email agora."]').first().click();
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para enviar o email.'}).first().click();
+            });
+        });
+        
+        test('Visualizar coringas', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.enviarEmail().then(async (enviarEmailPage) => {
+                await enviarEmailPage.waitForLoadState('load');
+                await enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().getByRole('button', {name: 'Clique para visualizar os coringas disponíveis.'}).first().click();
+                expect(enviarEmailPage.locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(5).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('div[class="HTMLMemo"]')).toBeVisible();
             });
         });
     })
+
+    test.describe('Financeiro', () => {
+        test('Criar novo contrato dentro do cadastro do cliente', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.criarContrato();
+            });
+        });
+
+        test('Ativar contrato gerando as suas parcelas', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.criarContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.ativarContrato();
+           })                    
+        })
+        
+        test('Suspender contrato', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.criarContrato();     
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.suspenderContrato();
+            })
+        });
+
+        test('Cancelar suspensão de contrato', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.criarContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.suspenderContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');
+                await financeiroPage.cancelarSuspensaoContrato();     
+            });
+        });
+        test('Cancelar contrato', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.criarContrato();
+                await financeiroPage.clicarPrimeiraFaturaNaGrade('FRAÇÃO');  
+                await financeiroPage.cancelarContrato();
+            });
+        });
+
+        test('Enviar fatura no chat', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.enviarFaturaNoChat();
+            });
+        });
+
+        test('Dar baixa na fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.darBaixaFatura();
+            });
+        })
+        
+        test('Inserir comentário na fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.inserirComentarioNaFatura();
+            });
+        });
+        
+        test('Remover fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.removerFatura();
+            });
+        });
+
+        test('Suspender fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.suspenderConta();
+            });
+        });
+
+        test('Imprimir fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.imprimirFatura();
+            });
+        });
+        
+        test('Alterar fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.alterarFatura();
+            });
+        });
+
+        test('Faturar as contas', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.faturarContas();
+            });
+        });
+
+        test('Editar informações do documento fiscal', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.editarDocumentoFiscal();
+            });
+        })
+        
+        test('Imprimir documentos fiscais da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => { 
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.imprimirDocumentoFiscal();
+            });
+        });
+
+        test('Anular documento fiscal', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {   
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.anularDocumentoFiscal();
+            });
+        });
+
+        test('Cancelar documento fiscal', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.cancelarDocumentoFiscal();
+            });
+        });
+
+        test('Gerar documentos fiscais da fatura', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.gerarDocumentosFiscaisDaConta();
+            });
+        })
+
+        test('Enviar negativas de débito por e-mail', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarFinanceiro().then(async (financeiroPage) => {
+                await financeiroPage.enviarNegativasDeDebitoPorEmail();
+            });
+        });
+
+        test('Imprimir negativas de débito', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {});
+
+        test('Gerar nova negativas de débito', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {});
+    });
+
+    test.describe('Workspace', () => {
+
+        test('Criar um atendimento preenchendo todos os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarWorkspace().then(async (workspacePage) => {
+                await workspacePage.criarAtendimentoWorkspace();
+            });
+        });
+        
+        test('Editar um atendimento', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarWorkspace().then(async (workspacePage) => {
+                await workspacePage.editarAtendimento();
+            });
+        });
+    });
 });
 
 test.describe('Opções', () => {
