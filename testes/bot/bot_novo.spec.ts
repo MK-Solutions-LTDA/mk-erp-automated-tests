@@ -302,9 +302,18 @@ test.describe('Ações', () => {
         test('Criar um atendimento preenchendo todos os campos obrigatórios', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
             await paginaBotNovo.abrirNovaConversa();
             await paginaBotNovo.acessarAbaPrimeiraConversa();
-            await paginaBotNovo.acessarWorkspace().then(async (workspacePage) => {});
+            await paginaBotNovo.acessarWorkspace().then(async (workspacePage) => {
+                await workspacePage.criarAtendimentoWorkspace();
+            });
         });
-
+        
+        test('Editar um atendimento', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.abrirNovaConversa();
+            await paginaBotNovo.acessarAbaPrimeiraConversa();
+            await paginaBotNovo.acessarWorkspace().then(async (workspacePage) => {
+                await workspacePage.editarAtendimento();
+            });
+        });
     });
 });
 
