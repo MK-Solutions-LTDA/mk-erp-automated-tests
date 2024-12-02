@@ -1,4 +1,4 @@
-import {type Page } from "@playwright/test";
+import {FrameLocator, type Page } from "@playwright/test";
 import BasePage from "./BasePage";
 import step from "../utilitarios/decorators";
 

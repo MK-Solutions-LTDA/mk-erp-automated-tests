@@ -6,9 +6,8 @@ no caso, a gente só perdeu aqui 🫠😭
 mas a verdadeira vitória são os amigos que fizemos pelo caminho
 */
 
-import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test";
+import { BrowserContext, type Locator, Page } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
-import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import FinanceiroBotPage from "./financeiro/FinanceiroBotPage";
