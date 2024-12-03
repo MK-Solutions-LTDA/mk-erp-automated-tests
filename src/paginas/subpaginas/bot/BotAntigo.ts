@@ -113,8 +113,52 @@ export default class BotAntigo {
         await this.gridPrincipal.locator('input[value="Enviar"]').click();
     }
 
+
+    @step('Cadastrar resposta padronizada')
+    async cadastrarRespostaPadronizada() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Cadastrar Resposta Padronizada' }).click();
+        await this.gridModal.locator('textarea').pressSequentially(faker.hacker.phrase());
+        await this.gridModal.getByRole('button', { name: 'Salvar' }).click();
+    }
+
+    @step('Cadastrar resposta padronizada com emoji')
+    async cadastrarRespostaPadronizadaComEmoji() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Cadastrar Resposta Padronizada' }).click();
+        await this.gridModal.locator('textarea').pressSequentially('😍');
+        await this.gridModal.getByRole('button', { name: 'Salvar' }).click();
+    }
+
     @step('Excluir audio')
     async excluirAudio() {
         await this.gridFuncoes.getByRole('button', { name: 'Excluir' }).click();
+    }
+
+    @step('Encerrar atendimento')
+    async encerrarAtendimento() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Encerrar Atendimento' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        })
+    }
+
+    @step('Devolver atendimento')
+    async devolverAtendimento() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Devolver Atendimento' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        })
+    }
+
+    @step('Sair da conversa')
+    async sairConversa() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Sair da conversa' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        })
     }
 }

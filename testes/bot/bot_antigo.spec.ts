@@ -2,6 +2,48 @@ import { fakerPT_BR as faker } from "@faker-js/faker";
 import { test } from "../../src/utilitarios/fixtures/base";
 
 test.describe('Conversas ativas', () => {
+    test.describe('Opções', async () => {
+        test('Encerrar um atendimento', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.encerrarAtendimento();
+        });
+        test('Devolver atendimento para fila', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.devolverAtendimento();
+        });
+        test('Sair da conversa', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.sairConversa();
+        });
+        test('Cadastrar e enviar resposta padronizada', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.cadastrarRespostaPadronizada();
+        });
+        test('Cadastrar resposta com emoji', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.cadastrarRespostaPadronizadaComEmoji();
+        });
+        test('Editar resposta padronizada', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.editarRespostaPadronizada();
+        });
+        test('Excluir a resposta padrão', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.excluirRespostaPadronizada();
+        })
+        test('Enviar template com texto, coringa e emoji', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.enviarTemplateTextoCoringaEmoji();
+        });
+        test('Enviar template com imagem e emoji', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.enviarTemplateImagemEmoji();
+        });
+        test('Enviar template com anexo e emoji', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.enviarTemplateAnexoEmoji();
+        });
+    });
     test("Enviar mensagens no chat", async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
         await paginaBotAntigo.acessarConversaSetor();
         await paginaBotAntigo.enviarMensagensNoChat(faker.hacker.phrase());
@@ -22,17 +64,14 @@ test.describe('Conversas ativas', () => {
         await paginaBotAntigo.acessarConversa();
         await paginaBotAntigo.enviarVideoChat();
     });
-
     test("Envio de Docx no chat", async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
         await paginaBotAntigo.acessarConversaSetor();
         await paginaBotAntigo.enviarDocxChat();
     });
-
     test("Gravar e enviar áudio curto", async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
         await paginaBotAntigo.acessarConversa();
         await paginaBotAntigo.gravarAudio(15);
     });
-
     test("Gravar e enviar áudio longo", async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
         await paginaBotAntigo.acessarConversa();
         await paginaBotAntigo.gravarAudio(30);
