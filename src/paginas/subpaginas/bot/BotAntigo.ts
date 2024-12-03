@@ -135,6 +135,41 @@ export default class BotAntigo {
         await this.gridFuncoes.getByRole('button', { name: 'Excluir' }).click();
     }
 
+    @step('Editar resposta padronizada')
+    async editarRespostaPadronizada() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Editar Resposta Padronizada' }).click();
+        await this.gridModal.locator('textarea').pressSequentially(faker.hacker.phrase());
+        await this.gridModal.getByRole('button', { name: 'Salvar' }).click();
+    }
+
+    @step('Excluir resposta padronizada')
+    async excluirRespostaPadronizada() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Excluir Resposta Padronizada' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        })
+    }
+
+    @step('Enviar template texto coringa emoji')
+    async enviarTemplateTextoCoringaEmoji() {
+        await this.gridFuncoes.getByRole('button', { name: 'Templates' }).click();
+        await this.gridFuncoes.getByRole('button', { name: 'Texto com coringa e emoji' }).click();
+    }
+
+    @step('Enviar template imagem emoji')
+    async enviarTemplateImagemEmoji() {
+        await this.gridFuncoes.getByRole('button', { name: 'Templates' }).click();
+        await this.gridFuncoes.getByRole('button', { name: 'Imagem com emoji' }).click();
+    }
+
+    @step('Enviar template anexo emoji')
+    async enviarTemplateAnexoEmoji() {
+        await this.gridFuncoes.getByRole('button', { name: 'Templates' }).click();
+        await this.gridFuncoes.getByRole('button', { name: 'Anexo com emoji' }).click();
+    }
+
     @step('Encerrar atendimento')
     async encerrarAtendimento() {
         await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
