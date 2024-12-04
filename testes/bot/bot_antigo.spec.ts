@@ -156,85 +156,160 @@ test.describe('Salas de setores', async () => {
 test.describe('Formulários', async () => {
     test.describe('Financeiro', async () => {
         test('Criar um contrato aguardando ativação', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.criarContratoAguardandoAtivacao();
         });
         test('Ativar o contrato gerando as suas parcelas', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.ativarContratoGerarParcelas();
         });
         test('Suspender contrato', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.suspenderContrato();
         });
         test('Cancelar suspensão do contrato', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.cancelarSuspensaoContrato();   
         });
         test('Alterar contrato', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.alterarContrato();
         });
         test('Cancelar contrato', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
-        });
-        test('Definir a permissão de acesso a esta função', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.cancelarContrato();
         });
         test('Enviar fatura no chat', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.enviarFaturaChat();
         });
         test('Baixar fatura selecionada', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.baixarFatura();
         });
         test('Inserir comentário na fatura', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.inserirComentarioFatura();
         });
         test('Remover fatura', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.removerFatura();
         });
         test('Suspender fatura', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.suspenderFatura();
         });
         test('Imprimir fatura', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.imprimirFatura();
         });
         test('Alterar fatura', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.alterarFatura();
         });
         test('Faturar contas', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.faturarContas();
         });
         test('Suspender conta', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.suspenderConta();
         });
         test('Cancelar suspensão de contas', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.cancelarSuspensaoConta();
         });
         test('Inserir conta', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.inserirConta();
         });
         test('Editar conta a receber', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.editarContaReceber();
         });
         test('Remover conta', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.removerConta();
         });
         test('Editar observações do documento fiscal', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.editarObservacoesDocumentoFiscal();
         });
         test('Anular documento fiscal', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.anularDocumentoFiscal();
         });
         test('Cancelar documento fiscal', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.cancelarDocumentoFiscal();
         });
         test('Gerar os documentos fiscais da fatura', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.gerarDocumentoFiscal();
         });
         test('Enviar negativas de débito por e-mail', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-                
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.enviarNegativasDeDebitoEmail();                
         });
         test('Imprimir negativas de débito', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.imprimirNegativasDeDebito();
         });
         test('Gerar nova negativas de débito', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-
+            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            await paginaBotAntigo.acessarConversa();
+            await paginaBotAntigo.acessarFinanceiro();
+            await paginaBotAntigo.gerarNovaNegativaDeDebito();
         })
     });
     test('Ordens de Serviço', async () => {

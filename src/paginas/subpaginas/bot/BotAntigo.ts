@@ -196,4 +196,142 @@ export default class BotAntigo {
             await dialog.accept();
         })
     }
+
+   @step('Acessar financeiro') 
+   async acessarFinanceiro() {
+        await this.gridFuncoes.getByRole('button', { name: 'Menu' }).click();
+        await this.gridFuncoes.getByRole('button', { name: 'Financeiro' }).click();
+    }
+
+    @step('Criar contrato aguardando a ativacao')
+    async criarContratoAguardandoAtivacao() {
+        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Criar Contrato' }).click();
+        await this.gridModal.getByRole('button', { name: 'Salvar' }).click();
+    }
+
+    @step('Ativa contrato gerando as parcelas')
+    async ativarContratoGerarParcelas() {
+
+    }
+
+    @step('Suspender contrato')
+    async suspenderContrato() {
+    }
+
+    @step('Cancelar suspensao do contrato')
+    async cancelarSuspensaoContrato() {
+    }
+
+    @step('Alterar contrato')
+    async alterarContrato() {
+    }
+
+    @step('Cancelar contrato')
+    async cancelarContrato() {
+    }
+    
+    @step('Enviar fatura no chat')
+    async enviarFaturaChat() {
+        
+    }
+
+    @step('Baixar fatura selecionada')
+    async baixarFatura() {
+        
+    }
+
+    @step('Inserir comentário na fatura')
+    async inserirComentarioFatura() {
+    
+    }
+
+    @step('Remover fatura')
+    async removerFatura() {
+
+    }
+
+    @step('Suspender fatura')
+    async suspenderFatura() {
+    }
+
+    @step('Imprimir fatura')
+    async imprimirFatura() {
+
+    }
+
+    @step('Alterar fatura')
+    async alterarFatura() {
+
+    }
+
+    @step('Faturar contas')
+    async faturarContas() {
+
+    }
+
+    @step('Suspender conta')
+    async suspenderConta() {
+
+    }
+
+    @step('Cancelar suspensao da conta')
+    async cancelarSuspensaoConta() {
+
+    }
+
+    @step('Inserir conta')
+    async inserirConta() {
+    
+    }
+
+    @step('Editar conta')
+    async editarContaReceber() {
+
+    }
+
+    @step('Remover conta')
+    async removerConta(){
+
+    }
+
+    @step('Editar observacoes do documento fiscal')
+    async editarObservacoesDocumentoFiscal() {
+    
+    }
+
+    @step('Anular documento fiscal')
+    async anularDocumentoFiscal() {
+    
+    }
+
+    @step('Cancelar documento fiscal')
+    async cancelarDocumentoFiscal() {
+    
+    }
+
+    @step('Gerar documento fiscal')
+    async gerarDocumentoFiscal() {
+    
+    }
+
+    @step('Enviar negativas de debito')
+    async enviarNegativasDeDebito() {
+
+    }
+
+    @step('Enviar negativas de debito por email')
+    async enviarNegativasDeDebitoEmail() {
+
+    }
+
+    @step('Imprimir negativas de debito')
+    async imprimirNegativasDeDebito() {
+
+    }
+
+    @step('Gerar nova negativa de débito')
+    async gerarNovaNegativaDeDebito() {
+
+    }
 }
