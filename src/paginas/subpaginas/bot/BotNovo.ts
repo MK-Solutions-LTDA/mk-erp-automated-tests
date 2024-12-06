@@ -6,9 +6,8 @@ no caso, a gente só perdeu aqui 🫠😭
 mas a verdadeira vitória são os amigos que fizemos pelo caminho
 */
 
-import { BrowserContext, type Locator, Page, WebSocket } from "@playwright/test";
+import { BrowserContext, type Locator, Page } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
-import { getRandomChampion } from "../../../utilitarios/api/championlist";
 import { expect } from "../../../utilitarios/fixtures/base";
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import FinanceiroBotPage from "./financeiro/FinanceiroBotPage";
@@ -561,4 +560,145 @@ export default class BotNovo {
         return new WorkspacePage(workspacePage);        
     }
 
+    @step('Acessar indicadores')
+    async acessarIndicadores() {
+        await this.indicadoresMenu.click();
+    }
+
+    @step('Alterar filtro indicadores')
+    async alterarFiltro(numeroDias: number) {
+        await this.page.locator(`xpath=//button[normalize-space()="${numeroDias} dias"]`).click();
+    }
+
+    @step('Acessar histórico')
+    async acessarHistorico() {
+        await this.historicoMenu.click();
+    }
+
+    @step('Alterar campos da tabela do historico')
+    async alterarCamposTabelaHistorico() {
+        await this.page.locator('xpath=//button[@aria-haspopup="dialog"]').click();
+        for (const li of await this.page.getByRole('checkbox').all()) {
+            await li.check();
+        }
+    }
+
+    @step('Conferir filtros do histórico')
+    async conferirFiltrosTabelaHistorico() {
+        await this.page.locator('xpath=//input[@placeholder="Selecionar"]').pressSequentially('Teste Caroline')
+        await this.page.getByText('Teste Caroline').first().click();
+        await this.alterarFiltro(30);
+    }
+
+    @step('Acessar detalhes da conversa')
+    async acessarDetalhesConversa() {
+        await this.page.locator('xpath=//td[@class="px-3 py-2 text-sm dark:text-white border border-white dark:border-gray-700 !border-none print:hidden sticky right-0 bg-gray-100 dark:bg-[#0D2129] z-[10]"]//div[@class="cursor-pointer"]').click();
+        await this.page.locator('xpath=//div[@class="flex w-full items-center justify-start gap-3 border-0 bg-none px-6 py-4 hover:bg-zinc-100 dark:hover:bg-slate-500"]').click();
+        expect(this.page.locator('xpath=//div[@class="grid grid-rows-[min-content,auto]"]//div[@class="mt-4 grid grid-rows-[min-content,auto,min-content] items-stretch"]//div[@class="relative overflow-hidden print:max-h-none"]//div[@class="custom-scrollbar overflow-y-auto rounded-lg border border-neutral-400 bg-zinc-100 dark:border-slate-800 dark:bg-[#212020] print:!max-h-none print:border-0 print:bg-white"]//div[@class="h-full"]//div//div[@class="text-cello relative max-w-prose rounded-2xl px-4 py-2 transition-colors mr-auto bg-[#B7D1E1] dark:bg-[#1E3848] rounded-tl-none"]')).toBeVisible();
+    }
+
+    @step('Imprimir detalhes da conversa')
+    async imprimirDetalhesConversa() {
+        await this.page.locator('xpath=//td[@class="px-3 py-2 text-sm dark:text-white border border-white dark:border-gray-700 !border-none print:hidden sticky right-0 bg-gray-100 dark:bg-[#0D2129] z-[10]"]//div[@class="cursor-pointer"]').click();
+        await this.page.locator('xpath=//div[@class="flex w-full items-center justify-start gap-3 border-0 bg-none px-6 py-4 hover:bg-zinc-100 dark:hover:bg-slate-500"]').click();
+        await this.page.locator('xpath=//button[normalize-space()="Imprimir atendimento"]').click();
+        await this.page.press('','Esc')
+    }
+
+    @step('Alterar setor da conversa')
+    async alterarSetorConversa() {
+        await this.page.locator('xpath=//div[@dir="ltr"]//button[2]').click();
+        await this.page.locator('xpath=//input[@value="90"]').click();
+        await this.page.locator('xpath=//button[normalize-space()="Alterar setor"]').click();
+        expect(this.page.locator('//div[@class="flex items-center justify-between w-[400px] p-4 bg-white border-l-8 shadow-md dark:bg-gray-900 border-[#53bf4a] animate-enter"]')).toBeVisible();
+    }
+
+    @step('Iniciar nova conversa a partir do histórico')
+    async iniciarNovaConversaHistorico() {
+        await this.page.locator('xpath=//div[@class="flex w-full items-center justify-start gap-3 border-0 bg-none px-6 py-4 hover:bg-zinc-100 dark:hover:bg-slate-500"]').click();
+        expect(this.page.locator('xpath=//p[@class="col-span-7 text-left text-sm font-semibold text-gray-500 dark:text-[#63D391]"]')).toBeVisible();
+    }
+
+    @step('Acessar avaliações e criticas')
+    async acessarAvaliacoesCriticas() {
+        await this.avaliacoesCriticasMenu.click();
+    }
+    
+    @step('Alterar filtros da tabela de avaliações e criticas')
+    async alterarFiltrosAvaliacoesCriticas() {
+        await this.alterarFiltro(7);
+    }
+
+    @step('Alterar campos da tabela')
+    async alterarCamposTabelaAvaliacoesCriticas(){
+        await this.page.locator('xpath=//button[@aria-haspopup="dialog"]').click();
+        for (const li of await this.page.getByRole('checkbox').all()) {
+            await li.check();
+        }
+    }
+
+    @step('Ver conversa')
+    async verConversa(){
+        await this.page.locator('xpath=//td[@class="px-3 py-2 text-sm dark:text-white border border-white dark:border-gray-700 !border-none print:hidden sticky right-0 bg-gray-100 dark:bg-[#0D2129] z-[10]"]').click();
+        await this.page.locator('xpath=//button[@class="flex w-full items-center justify-start gap-3 border-0 bg-none"]//div[@class="flex w-full items-center justify-start gap-3 border-0 bg-none px-6 py-4 hover:bg-zinc-100 dark:hover:bg-slate-500"]').click();
+        expect(this.page.locator('xpath=//div[@class="grid grid-rows-[min-content,auto]"]//div[@class="mt-4 grid grid-rows-[min-content,auto,min-content] items-stretch"]//div[@class="relative overflow-hidden print:max-h-none"]//div[@class="custom-scrollbar overflow-y-auto rounded-lg border border-neutral-400 bg-zinc-100 dark:border-slate-800 dark:bg-[#212020] print:!max-h-none print:border-0 print:bg-white"]//div[@class="h-full"]//div//div[@class="text-cello relative max-w-prose rounded-2xl px-4 py-2 transition-colors mr-auto bg-[#B7D1E1] dark:bg-[#1E3848] rounded-tl-none"]//footer[@class="mt-[2px] flex w-full justify-end"].click()')).toBeVisible();
+    }
+
+    @step('Imprimir conversa dentro das avaliacoes e criticas')
+    async imprimirConversa(){
+        await this.page.locator('xpath=//td[@class="px-3 py-2 text-sm dark:text-white border border-white dark:border-gray-700 !border-none print:hidden sticky right-0 bg-gray-100 dark:bg-[#0D2129] z-[10]"]').click();
+        await this.page.locator('xpath=//button[@class="flex w-full items-center justify-start gap-3 border-0 bg-none"]//div[@class="flex w-full items-center justify-start gap-3 border-0 bg-none px-6 py-4 hover:bg-zinc-100 dark:hover:bg-slate-500"]').click();
+        await this.page.locator('xpath=//button[normalize-space()="Imprimir atendimento"]').click();
+    }
+
+    @step('Filtrar atendimentos por operador')
+    async filtrarAtendimentosPorOperador(){
+        await this.page.getByRole('button', { name: 'Mostrando todos' }).click();
+        await this.page.locator('div').filter({ hasText: /^OperadorOperador$/ }).getByRole('combobox').click();
+        await this.page.getByPlaceholder('Pesquisar').click();
+        await this.page.getByPlaceholder('Pesquisar').fill('caroline mendel');
+        await this.page.getByLabel('Caroline Mendel user').check();
+        await this.page.getByText('Iniciado porIniciado porTipo').click();
+        await this.page.getByRole('button', { name: 'Aplicar' }).click();
+        await expect(this.page.getByRole('cell', { name: 'Caroline Mendel user' }).first()).toBeVisible();
+    }
+    
+    @step('Gravar informações em "análise da conversa"')
+    async gravarAnaliseConversa(){
+        await this.page.locator('td:nth-child(12)').first().click();
+        await this.page.getByRole('button', { name: 'Análise de avaliação do' }).click();
+        await this.page.getByRole('combobox').click();
+        await this.page.getByLabel('Tecnico').click();
+        await this.page.getByPlaceholder('Digite aqui as observações').click();
+        await this.page.getByPlaceholder('Digite aqui as observações').fill('testetes');
+        await this.page.getByPlaceholder('Digite aqui as ações').click();
+        await this.page.getByPlaceholder('Digite aqui as ações').fill('testes');
+        await this.page.getByLabel('Quero marcar o atendimento').click();
+        await this.page.getByRole('button', { name: 'Enviar' }).click();
+    }
+
+    @step('Acessar envio em massa')
+    async acessarEnvioEmMassa(){
+        await this.envioMassaMenu.click();
+    }
+
+    @step('Enviar em massa')
+    async fazerEnvioEmMassa(){
+        await this.page.locator('div').filter({ hasText: /^Envio em massa$/ }).first().click();
+        await this.page.locator('slot').filter({ hasText: /^Grupo de atendimentoGrupo de atendimento$/ }).getByRole('combobox').click();
+        await this.page.getByLabel('Carolzinha').check();
+        await this.page.getByLabel('Carolzinha').press('Escape');
+        await this.page.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.getByLabel('Templates').getByRole('combobox').click();
+        await this.page.getByLabel('Gupshup 4229').check();
+        await this.page.getByRole('option', { name: 'Gupshup 4229' }).locator('label').click();
+        await this.page.getByLabel('Gupshup 4229').check();
+        await this.page.getByLabel('Templates').locator('div').filter({ hasText: 'emoji_imagem&#127775; ATENÇÃO' }).nth(2).click();
+        await this.page.getByPlaceholder('Descrição do envio em massa').click();
+        await this.page.getByPlaceholder('Descrição do envio em massa').fill('teste');
+        await this.page.getByText('Enviar').click();
+        await this.page.getByLabel('Estou ciente que esta ação nã').click();
+        await expect(this.page.locator('div').filter({ hasText: /^Sucesso!Realizando o envio em massa$/ }).nth(2)).toBeVisible();
+    }
 }

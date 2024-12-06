@@ -4,6 +4,7 @@ import { MainPage } from "../../paginas/MainPage";
 import { TipoPagina } from "../TipoPagina";
 import { pass, user, user2, pass2 } from '../../../Setup';
 import BotNovo from "../../paginas/subpaginas/bot/BotNovo";
+import BotAntigo from "../../paginas/subpaginas/bot/BotAntigo";
 
 export const test = base.extend<{
   navegador1: BrowserContext;
@@ -14,6 +15,7 @@ export const test = base.extend<{
   paginaPrincipal2: MainPage;
   paginaBotNovo: BotNovo;
   paginaBotNovo2: BotNovo;
+  paginaBotAntigo: BotAntigo;
 }>({
   
   // Cria a primeira instância de navegador
@@ -94,6 +96,20 @@ export const test = base.extend<{
 
     await newPage.waitForLoadState('load');
     await paginaBotNovo.limparConversa();
+    await newPage.close();
+  },
+
+  paginaBotAntigo: async ({ paginaPrincipal, navegador1 }, use) => {
+    const pagePromise = navegador1.waitForEvent('page');
+    await paginaPrincipal.irParaPagina(TipoPagina.BOT);
+    const newPage = await pagePromise;
+    const pagePromise2 = navegador1.waitForEvent('page');
+    await newPage.getByRole('link', { name: 'Chatbot' }).click();
+    const newPage2 = await pagePromise2;
+    const paginaBotAntigo = new BotAntigo(newPage2, navegador1);
+    await use(paginaBotAntigo);
+    await paginaBotAntigo.limparConversa();
+    await newPage.waitForLoadState('load');
     await newPage.close();
   },
 

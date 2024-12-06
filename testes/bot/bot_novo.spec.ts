@@ -415,6 +415,79 @@ test.describe('Opções', () => {
     });
 
 });
+test.describe('Menu lateral', () => {
+    test.describe('Indicadores', () => {
+        test('Alterar filtro indicadores', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarIndicadores();
+            await paginaBotNovo.alterarFiltro(7);
+        });
+    });    
+    test.describe('Historico', () => {
+        test('Alterar campos da tabela', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarHistorico();
+            await paginaBotNovo.alterarCamposTabelaHistorico();
+            await paginaBotNovo.botaoFecharModal.click();
+        });
+        test('Conferir filtros da tabela', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarHistorico();
+            await paginaBotNovo.conferirFiltrosTabelaHistorico();
+            await paginaBotNovo.botaoFecharModal.click();
+        })
+        test('Ver detalhes da conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarHistorico();
+            await paginaBotNovo.acessarDetalhesConversa();
+            await paginaBotNovo.botaoFecharModal.click();
+        });
+        test('Imprimir detalhes da conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarHistorico();
+            await paginaBotNovo.imprimirDetalhesConversa();
+        });
+        test('Alterar o setor da conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => { 
+            await paginaBotNovo.acessarHistorico();
+            await paginaBotNovo.alterarSetorConversa();
+        });
+        test('Iniciar conversa a partir do histórico', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarHistorico();
+            await paginaBotNovo.iniciarNovaConversaHistorico();
+        });
+    });
+
+    test.describe('Avaliações e críticas', () => {
+        test('Verificar filtros de busca', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarAvaliacoesCriticas();
+            await paginaBotNovo.alterarFiltrosAvaliacoesCriticas();
+            await paginaBotNovo.botaoFecharModal.click();
+        });
+        test('Alterar campos da tabela', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarAvaliacoesCriticas();
+            await paginaBotNovo.alterarCamposTabelaAvaliacoesCriticas();
+            await paginaBotNovo.botaoFecharModal.click();
+        });
+        test('Ver conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarAvaliacoesCriticas();
+            await paginaBotNovo.verConversa();
+            await paginaBotNovo.botaoFecharModal.click();
+        });
+        test('Imprimir conversa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarAvaliacoesCriticas();
+            await paginaBotNovo.imprimirConversa();
+        });
+        test('Filtrar atendimentos por operador', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarAvaliacoesCriticas();
+            await paginaBotNovo.filtrarAtendimentosPorOperador();
+        });
+        test('Gravar informações em "análise da conversa"', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarAvaliacoesCriticas();
+            await paginaBotNovo.gravarAnaliseConversa(); 
+        });
+    });  
+    test.describe('Envio em massa', () => {
+        test('Fazer envio em massa', async ({ paginaLogin, paginaPrincipal, paginaBotNovo }) => {
+            await paginaBotNovo.acessarEnvioEmMassa();
+            await paginaBotNovo.fazerEnvioEmMassa();
+        })
+    }); 
+});
 
 test.describe('Tags', () => {
 
