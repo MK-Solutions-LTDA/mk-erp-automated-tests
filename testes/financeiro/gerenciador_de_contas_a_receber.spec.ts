@@ -1,7 +1,7 @@
 import { FinanceiroPage } from "../../src/paginas/FinanceiroPage";
 import { MainPage } from "../../src/paginas/MainPage";
 import { LoginPage } from "../../src/paginas/LoginPage";
-import { TipoPagina } from "../../src/utilitarios/TipoPagina";
+import { TipoPagina } from "../../src/utilitarios/tipopagina";
 import { ItensMenu } from "../../src/utilitarios/itens_submenu/financeiro/financeiro_submenus";
 import { API } from "../../src/utilitarios/api/financeiro/gerenciador_contas_receber/apimap";
 import { expect, test } from "@playwright/test";
@@ -261,7 +261,7 @@ test.describe("Contas não faturadas", () => {
     paginaLogin = new LoginPage(page);
 
     await paginaLogin.entrarPaginaLogin();
-    paginaPrincipal = await paginaLogin.realizarLogin(user, pass);
+    paginaPrincipal = await paginaLogin.realizarLogin(user!, pass!);
     paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     paginaGerenciadorContasReceber = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER);
 
