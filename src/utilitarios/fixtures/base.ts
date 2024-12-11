@@ -1,7 +1,7 @@
 import { test as base, BrowserContext } from "@playwright/test";
 import { LoginPage } from "../../paginas/LoginPage";
 import { MainPage } from "../../paginas/MainPage";
-import { TipoPagina } from "../TipoPagina";
+import { TipoPagina } from "../tipopagina.ts";
 import { pass, user, user2, pass2 } from '../../../Setup';
 import BotNovo from "../../paginas/subpaginas/bot/BotNovo";
 import BotAntigo from "../../paginas/subpaginas/bot/BotAntigo";

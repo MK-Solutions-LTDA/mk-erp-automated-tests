@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../src/paginas/LoginPage";
 import { MainPage } from "../../src/paginas/MainPage";
-import { TipoPagina } from "../../src/utilitarios/TipoPagina";
+import { TipoPagina } from "../../src/utilitarios/tipopagina.ts";
 import { ConfigPage } from "../../src/paginas/ConfigPage";
 import { url } from "../../Setup";
 

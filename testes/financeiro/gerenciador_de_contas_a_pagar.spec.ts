@@ -2,7 +2,7 @@ import { GerenciadorContasPagar } from "../../src/paginas/subpaginas/financeiro/
 import { FinanceiroPage } from "../../src/paginas/FinanceiroPage";
 import { MainPage } from "../../src/paginas/MainPage";
 import { LoginPage } from "../../src/paginas/LoginPage";
-import { TipoPagina } from "../../src/utilitarios/TipoPagina";
+import { TipoPagina } from "../../src/utilitarios/tipopagina.ts";
 import { ItensMenu } from "../../src/utilitarios/itens_submenu/financeiro/financeiro_submenus";
 import { API } from "../../src/utilitarios/api/financeiro/gerenciador_contas_pagar/apimap";
 import { expect, test } from "@playwright/test";

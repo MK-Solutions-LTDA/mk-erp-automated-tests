@@ -1,5 +1,5 @@
 import { type Page } from '@playwright/test';
-import { TipoPagina } from '../utilitarios/TipoPagina';
+import { TipoPagina } from '../utilitarios/tipopagina.ts';
 import BasePage from './BasePage';
 import { FinanceiroPage } from './FinanceiroPage';
 import { ConfigPage } from './ConfigPage';
