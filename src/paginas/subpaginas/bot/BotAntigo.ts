@@ -1,7 +1,5 @@
-import { BrowserContext, FrameLocator, type Locator, Page } from "@playwright/test";
+import { BrowserContext, expect, FrameLocator, type Locator, Page } from "@playwright/test";
 import step from "../../../utilitarios/decorators";
-import { getRandomChampion } from "../../../utilitarios/api/championlist";
-import { expect } from "../../../utilitarios/fixtures/base";
 import { fakerPT_BR as faker } from "@faker-js/faker";
 import path from "path";
 
@@ -13,6 +11,7 @@ export default class BotAntigo {
     private readonly gridFuncoes: FrameLocator;
     private readonly gridModal: FrameLocator;
     private readonly gridModal2: FrameLocator;
+    private readonly gridModal3: FrameLocator;
     private readonly folderImagens: any;
 
     constructor(page: Page, context: BrowserContext) {
@@ -23,6 +22,7 @@ export default class BotAntigo {
         this.gridPrincipal = this.page.locator('iframe[name="mainform"]').contentFrame();
         this.gridFuncoes = this.gridPrincipal.locator('iframe').nth(1).contentFrame();
         this.gridModal = this.gridPrincipal.locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame();
+        this.gridModal3 = this.gridPrincipal.locator('iframe').nth(3).contentFrame().locator('iframe[name="mainform"]').contentFrame();
         this.gridModal2 = this.gridPrincipal.locator('iframe').nth(2).contentFrame().locator('iframe[name="mainform"]').contentFrame().locator('iframe').nth(1).contentFrame();
     }
 
@@ -113,7 +113,6 @@ export default class BotAntigo {
         await this.gridPrincipal.locator('input[value="Enviar"]').click();
     }
 
-
     @step('Cadastrar resposta padronizada')
     async cadastrarRespostaPadronizada() {
         await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
@@ -199,46 +198,146 @@ export default class BotAntigo {
 
    @step('Acessar financeiro') 
    async acessarFinanceiro() {
-        await this.gridFuncoes.getByRole('button', { name: 'Menu' }).click();
-        await this.gridFuncoes.getByRole('button', { name: 'Financeiro' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Financeiro do cliente' }).click();
     }
 
     @step('Criar contrato aguardando a ativacao')
     async criarContratoAguardandoAtivacao() {
-        await this.gridPrincipal.getByRole('button', { name: 'Menu de opções' }).click();
-        await this.gridPrincipal.getByRole('button', { name: 'Criar Contrato' }).click();
-        await this.gridModal.getByRole('button', { name: 'Salvar' }).click();
+        await this.gridPrincipal.getByRole('button', { name: 'Novo Contrato' }).click();
+        await this.page.waitForTimeout(2000);
+        await this.gridModal3.locator('//div[@title="Plano de acesso do novo contrato."]//div').click();
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').click();
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').pressSequentially('teste manu');
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').press('Enter');
+        await this.page.waitForTimeout(2000);
+        await this.gridModal3.getByRole('option').nth(1).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('checkbox').nth(3).click();
+        await this.gridModal3.getByRole('checkbox').nth(4).click();
+        await this.gridModal3.getByRole('button', { name: 'Concluir' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.page.locator('xpath=//div[@class="mk-form-fechar"]').click();
     }
 
     @step('Ativa contrato gerando as parcelas')
     async ativarContratoGerarParcelas() {
-
+        await this.gridPrincipal.getByRole('button', { name: 'Novo Contrato' }).click();
+        await this.page.waitForTimeout(2000);
+        await this.gridModal3.locator('//div[@title="Plano de acesso do novo contrato."]//div').click();
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').click();
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').pressSequentially('teste manu');
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').press('Enter');
+        await this.page.waitForTimeout(2000);
+        await this.gridModal3.getByRole('option').nth(1).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('checkbox').nth(4).click();
+        await this.gridModal3.getByRole('button', { name: 'Concluir' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.page.locator('xpath=//div[@class="mk-form-fechar"]').click();
     }
 
     @step('Suspender contrato')
     async suspenderContrato() {
+        await this.gridPrincipal.getByRole('button', { name: 'Novo Contrato' }).click();
+        await this.page.waitForTimeout(2000);
+        await this.gridModal3.locator('//div[@title="Plano de acesso do novo contrato."]//div').click();
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').click();
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').pressSequentially('teste manu');
+        await this.gridModal3.locator('xpath=//input[@id="lookupSearchQuery"]').press('Enter');
+        await this.page.waitForTimeout(2000);
+        await this.gridModal3.getByRole('option').nth(1).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('button', { name: 'Próximo' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal3.getByRole('checkbox').nth(4).click();
+        await this.gridModal3.getByRole('button', { name: 'Concluir' }).click();
+        await this.page.waitForTimeout(1000);
+        await this.page.locator('xpath=//div[@class="mk-form-fechar"]').click();
+        await this.page.reload();
+        await this.gridFuncoes.locator('xpath=//div[@class="webix_cell webix_row_select"]"').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Suspender contrato' }).click();
+        await this.gridModal.locator('xpath=//div[@title="Informe por qual motivo o cliente deseja solicitar esta suspensão."]//div//button[@type="button"]').click();
+        await this.gridModal.locator('xpath=//option[@value="6"]').click();
+        await this.gridModal.getByRole('button', { name: 'Próxima etapa' }).click();
+        await this.gridModal.locator('xpath=//input[@title="Data de agendamento do bloqueio de conexão."]').click();
+        await this.gridModal.locator('xpath=//input[@title="Data de agendamento do bloqueio de conexão."]').pressSequentially('22122222');
+        await this.gridModal.getByRole('button', { name: 'Próxima etapa' }).click();
+        await this.gridModal.getByRole('checkbox').first().click();
+        await this.gridModal.getByRole('button', { name: 'Próxima etapa' }).click();
     }
 
     @step('Cancelar suspensao do contrato')
     async cancelarSuspensaoContrato() {
+        await this.suspenderContrato();
+        await this.page.reload();
+        await this.acessarFinanceiro();
+        await this.gridFuncoes.locator('xpath=//tbody/tr[@role="row"]/td[7]/div[1]/select[1]').click();
+        await this.gridFuncoes.locator('xpath=//tbody/tr[@role="row"]/td[7]/div[1]/select[1]').selectOption('Suspenso');
+        await this.gridFuncoes.locator('xpath=//div[normalize-space()="Suspenso"]').first().click();
+        await this.gridPrincipal.getByRole('button', { name: 'Cancelar suspensão' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
     }
 
     @step('Alterar contrato')
     async alterarContrato() {
+        await this.gridFuncoes.locator('xpath=//div[@class="webix_cell webix_row_select"][normalize-space()="Não informado"]').first().click();
+        await this.gridPrincipal.getByRole('button', { name: 'Alterar contrato' }).click();
+        await this.gridModal.getByRole('button', {name: 'Alterações gerais'}).click();
+        await this.gridModal.locator('xpath=//span[normalize-space()="Observações"]').first().click();
+        await this.gridModal.locator('textarea', {hasText:'WFRInput842082'}).pressSequentially(faker.lorem.sentence());
+        await this.gridModal.getByRole('checkbox').first().click();
+        await this.gridModal.getByRole('button', {name: 'Clique para finalizar'}).click();
     }
 
     @step('Cancelar contrato')
     async cancelarContrato() {
+        await this.gridFuncoes.locator('xpath=//div[@class="webix_cell webix_row_select"][normalize-space()="Não informado"]').first().click();
+        await this.gridPrincipal.getByRole('button', { name: 'Cancelar contrato' }).click();
+        await this.gridModal.locator('xpath=//div[@title="Selecione um motivo de cancelamento."]//div//button[@type="button"]').first().click();
+        await this.gridModal.locator('xpath=//option[@value="2"]').click();
+        await this.gridModal.getByRole('button', {name: 'Próxima etapa'}).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal.getByRole('button', {name: 'Próxima etapa'}).click();
+        await this.page.waitForTimeout(1000);
+        await this.gridModal.getByRole('button', {name: 'Próxima etapa'}).click();
+        await this.gridModal.getByRole('checkbox').nth(3).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
     }
     
     @step('Enviar fatura no chat')
     async enviarFaturaChat() {
-        
+        await this.gridPrincipal.getByRole('button', { name: 'Faturas a receber deste contrato' }).click();
+        await this.gridFuncoes.locator('xpath=//div[8]//div[1]').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Enviar fatura ao chat' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
+        expect(await this.gridFuncoes.locator('xpath=//div[contains(@class,"chat-msg__content chat-msg__content--me")]').textContent()).toContain('Anexo');
     }
 
     @step('Baixar fatura selecionada')
     async baixarFatura() {
-        
+        // fazer pelo banco ooo mai god 
     }
 
     @step('Inserir comentário na fatura')

@@ -108,7 +108,6 @@ export const test = base.extend<{
     const newPage2 = await pagePromise2;
     const paginaBotAntigo = new BotAntigo(newPage2, navegador1);
     await use(paginaBotAntigo);
-    await paginaBotAntigo.limparConversa();
     await newPage.waitForLoadState('load');
     await newPage.close();
   },
