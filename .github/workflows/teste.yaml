@@ -2,16 +2,16 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-  merge:
-    branches:
-      - main
 jobs:
   tests_e2e:
     name: Run end-to-end tests
     runs-on: ubuntu-latest
+    env:
+      USER: ${{ secrets.USER }}
+      USER_2: ${{ secrets.USER_2 }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+      PASSWORD_2: ${{ secrets.PASSWORD_2 }}
+      API_URL: ${{ secrets.API_URL }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
