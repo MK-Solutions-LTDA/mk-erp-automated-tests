@@ -156,7 +156,7 @@ test.describe('Salas de setores', async () => {
 test.describe('Formulários', async () => {
     test.describe('Financeiro', async () => {
         test('Criar um contrato aguardando ativação', async ({paginaLogin, paginaPrincipal, paginaBotAntigo}) => {
-            await paginaBotAntigo.iniciarConversa('Teste Caroline');
+            // await paginaBotAntigo.iniciarConversa('Teste Caroline');
             await paginaBotAntigo.acessarConversa();
             await paginaBotAntigo.acessarFinanceiro();
             await paginaBotAntigo.criarContratoAguardandoAtivacao();
