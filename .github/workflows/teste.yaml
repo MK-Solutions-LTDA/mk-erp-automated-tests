@@ -12,7 +12,7 @@ jobs:
       PASSWORD: ${{ secrets.PASSWORD }}
       PASSWORD_2: ${{ secrets.PASSWORD_2 }}
       API_URL: ${{ secrets.API_URL }}
-      CI_WORKERS: 1;
+      CI_WORKERS: 1
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
