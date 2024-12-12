@@ -282,7 +282,7 @@ export default class BotAntigo {
         await this.gridModal.getByRole('button', { name: 'Próxima etapa' }).click();
     }
 
-    @step('Cancelar suspensao do contrato')
+    @step('Can,celar suspensao do contrato')
     async cancelarSuspensaoContrato() {
         await this.suspenderContrato();
         await this.page.reload();
@@ -342,7 +342,7 @@ export default class BotAntigo {
 
     @step('Inserir comentário na fatura')
     async inserirComentarioFatura() {
-    
+        
     }
 
     @step('Remover fatura')
