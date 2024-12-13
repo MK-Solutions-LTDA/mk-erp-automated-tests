@@ -7,7 +7,6 @@ export default defineConfig({
   fullyParallel: true,
   workers: process.env.CI_WORKERS ? 1 : 2,
   reporter: [['html', { printSteps: true }]],
-  retries: 2,
   use: {
     launchOptions: {
       args: ["--start-maximized", 
