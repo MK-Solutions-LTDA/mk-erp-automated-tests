@@ -132,7 +132,7 @@ export const test = base.extend<{
   paginaGerenciadorContasReceber: async ({ paginaPrincipal }, use) => {
     const paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
     const paginaGerenciadorContasReceber = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER); 
-    await paginaGerenciadorContasReceber.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
+    await paginaGerenciadorContasReceber.navegarParaPainel('li[id="1686064"]', 'iframe[componenteaba="Novo Gerenciador de Contas a PagarClosePainelAba"]');
     await use(paginaGerenciadorContasReceber);
   }
 
