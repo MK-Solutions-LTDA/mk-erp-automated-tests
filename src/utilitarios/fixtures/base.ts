@@ -5,6 +5,9 @@ import { TipoPagina } from "../tipopagina.ts";
 import { pass, user, user2, pass2 } from '../../../Setup';
 import BotNovo from "../../paginas/subpaginas/bot/BotNovo";
 import BotAntigo from "../../paginas/subpaginas/bot/BotAntigo";
+import { FinanceiroPage } from "../../paginas/FinanceiroPage.ts";
+import { GerenciadorContasReceber } from "../../paginas/subpaginas/financeiro/GerenciadorContasReceber.ts";
+import { ItensMenu } from "../itens_submenu/financeiro/financeiro_submenus.ts";
 
 export const test = base.extend<{
   navegador1: BrowserContext;
@@ -16,6 +19,8 @@ export const test = base.extend<{
   paginaBotNovo: BotNovo;
   paginaBotNovo2: BotNovo;
   paginaBotAntigo: BotAntigo;
+  paginaFinanceiro: FinanceiroPage;
+  paginaGerenciadorContasReceber: GerenciadorContasReceber;
 }>({
   
   // Cria a primeira instância de navegador
@@ -50,13 +55,13 @@ export const test = base.extend<{
 
   // Fixture para a página principal da primeira conta
   paginaPrincipal: async ({ paginaLogin }, use) => {
-    const paginaPrincipal = await paginaLogin.realizarLogin(user, pass);
+    const paginaPrincipal = await paginaLogin.realizarLogin(user!, pass!);
     await use(paginaPrincipal);
   },
 
   // Fixture para a página principal da segunda conta
   paginaPrincipal2: async ({ paginaLogin2 }, use) => {
-    const paginaPrincipal2 = await paginaLogin2.realizarLogin(user2, pass2);
+    const paginaPrincipal2 = await paginaLogin2.realizarLogin(user2!, pass2!);
     await use(paginaPrincipal2);
   },
 
@@ -122,6 +127,13 @@ export const test = base.extend<{
     await newPage.waitForLoadState('load');
     await paginaBotNovo.limparConversa();
     await newPage.close();
+  },
+
+  paginaGerenciadorContasReceber: async ({ paginaPrincipal }, use) => {
+    const paginaFinanceiro = await paginaPrincipal.irParaPagina(TipoPagina.FINANCEIRO);
+    const paginaGerenciadorContasReceber = await paginaFinanceiro.irParaPagina(ItensMenu.GERENCIADOR_DE_CONTAS_A_RECEBER); 
+    await paginaGerenciadorContasReceber.navegarParaPainel('li[id="1171825"]', 'iframe[componenteaba="Gerenciador de Contas a ReceberClosePainelAba"]');
+    await use(paginaGerenciadorContasReceber);
   }
 
 });

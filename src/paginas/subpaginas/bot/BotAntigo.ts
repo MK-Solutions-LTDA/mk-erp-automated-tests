@@ -331,7 +331,7 @@ export default class BotAntigo {
         await this.gridPrincipal.getByRole('button', { name: 'Enviar fatura ao chat' }).click();
         this.page.on('dialog', async dialog => {
             await dialog.accept();
-        });
+        }); 
         expect(await this.gridFuncoes.locator('xpath=//div[contains(@class,"chat-msg__content chat-msg__content--me")]').textContent()).toContain('Anexo');
     }
 
@@ -342,31 +342,61 @@ export default class BotAntigo {
 
     @step('Inserir comentário na fatura')
     async inserirComentarioFatura() {
-        
+        await this.gridPrincipal.getByRole('button', { name: 'Faturas a receber deste contrato' }).click();
+        await this.gridFuncoes.locator('xpath=//div[8]//div[1]').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Inserir comentários na fatura.' }).click();
+        await this.gridModal.locator('textarea').pressSequentially(faker.lorem.sentence());
+        await this.gridModal.getByRole('checkbox').first().click();
+        await this.gridModal.getByRole('button', { name: 'Gravar comentário' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
     }
 
     @step('Remover fatura')
     async removerFatura() {
-
+        await this.gridPrincipal.getByRole('button', { name: 'Faturas a receber deste contrato' }).click();
+        await this.gridFuncoes.locator('xpath=//div[8]//div[1]').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Remover fatura' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
     }
 
     @step('Suspender fatura')
     async suspenderFatura() {
+        await this.gridPrincipal.getByRole('button', { name: 'Faturas a receber deste contrato' }).click();
+        await this.gridFuncoes.locator('xpath=//div[8]//div[1]').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Suspender fatura' }).click();
+        await this.gridModal.locator('xpath=//option[@value="6"]').first().click();
+        await this.gridModal.locator('xpath=(//input[@title="Informações adicionais para a suspensão."])[1]').pressSequentially(faker.lorem.sentence());
+        await this.gridModal.getByRole('checkbox').first().click();
+        await this.gridModal.getByRole('button', { name: 'Clique para executar o procedimento.' }).click();
     }
 
     @step('Imprimir fatura')
     async imprimirFatura() {
-
+        await this.gridPrincipal.getByRole('button', { name: 'Faturas a receber deste contrato' }).click();
+        await this.gridFuncoes.locator('xpath=//div[8]//div[1]').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Imprimir fatura' }).click();
     }
 
     @step('Alterar fatura')
     async alterarFatura() {
-
+        await this.gridPrincipal.getByRole('button', { name: 'Faturas a receber deste contrato' }).click();
+        await this.gridFuncoes.locator('xpath=//div[8]//div[1]').click();
+        await this.gridPrincipal.getByRole('button', { name: 'Alterar fatura' }).click();
+        await this.gridModal.locator('textarea').pressSequentially(faker.lorem.sentence());
+        await this.gridModal.getByRole('checkbox').first().click();
+        await this.gridModal.getByRole('button', { name: 'Gravar comentário' }).click();
+        this.page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
     }
 
     @step('Faturar contas')
     async faturarContas() {
-
+        
     }
 
     @step('Suspender conta')
