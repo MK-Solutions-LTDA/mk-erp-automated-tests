@@ -6,7 +6,7 @@ WORKDIR /bin/bash
 
 # Copie arquivos do projeto para o container
 COPY package.json package-lock.json ./
-COPY tests ./tests
+COPY testes ./testes
 
 # Instale dependências
 RUN npm ci
