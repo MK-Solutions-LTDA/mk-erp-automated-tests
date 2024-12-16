@@ -7,6 +7,8 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 COPY testes ./testes
 
+COPY src ./src
+
 # Instale dependências
 RUN npm ci
 
