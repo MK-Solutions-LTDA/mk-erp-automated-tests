@@ -401,7 +401,6 @@ export default class BotAntigo {
 
     @step('Suspender conta')
     async suspenderConta() {
-
     }
 
     @step('Cancelar suspensao da conta')
