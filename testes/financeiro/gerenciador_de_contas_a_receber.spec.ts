@@ -2,10 +2,10 @@ import { API } from "../../src/utilitarios/api/financeiro/gerenciador_contas_rec
 import Servicos from "../../src/utilitarios/servicos";
 import { test, expect } from "../../src/utilitarios/fixtures/base";
 
-// test.use({
-//   video: { mode: "on", size: { width: 1920, height: 1080 } },
-//   screenshot: { mode: "on", fullPage: true },
-// });
+test.use({
+  video: { mode: "on", size: { width: 1920, height: 1080 } },
+  screenshot: { mode: "on", fullPage: true },
+});
 
 test.describe("Faturas", () => {
   test("Deve liquidar uma fatura a receber com sucesso", async ({ paginaLogin, paginaPrincipal, paginaGerenciadorContasReceber }) => {
