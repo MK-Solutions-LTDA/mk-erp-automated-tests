@@ -8,6 +8,7 @@ COPY package.json package-lock.json ./
 COPY testes ./testes
 
 COPY src ./src
+COPY Setup.ts /usr/src/app/Setup.ts
 
 # Instale dependências
 RUN npm ci
