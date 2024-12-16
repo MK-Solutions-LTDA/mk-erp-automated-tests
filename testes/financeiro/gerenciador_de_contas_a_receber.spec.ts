@@ -364,7 +364,6 @@ test.describe("Email", () => {
   });
   test('Fazer download do email', async ({ page, paginaLogin, paginaPrincipal, paginaGerenciadorContasReceber }) => {
     await paginaGerenciadorContasReceber.fazerDownloadEmail();
-    // expect(page.on('download', download => {expect(download.suggestedFilename()).toBe('emails.pdf');}))
   });
   test('Fazer impressão do email', async ({ page, paginaLogin, paginaPrincipal, paginaGerenciadorContasReceber }) => {
     // const responsePromise = new Promise(async (resolve) => {page.on("response", (response) => { if (response.url().includes(`${API.IMPRESSAO_GRADE_EMAIL}`)) { return resolve(response) }})});

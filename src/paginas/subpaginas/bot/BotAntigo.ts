@@ -396,7 +396,7 @@ export default class BotAntigo {
 
     @step('Faturar contas')
     async faturarContas() {
-        
+      await this.gridFuncoes.getByRole('button', { name: 'Faturar contas' }).click();  
     }
 
     @step('Suspender conta')
