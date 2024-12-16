@@ -18,4 +18,4 @@ RUN npx playwright install --with-deps
 
 # Comando padrão para rodar testes
 
-CMD ["npx", "playwright", "test", "gerenciador_de_contas_a_receber.spec.ts", "--reporter=html"]
+CMD ["npx", "playwright", "test", "gerenciador_de_contas_a_receber.spec.ts"]

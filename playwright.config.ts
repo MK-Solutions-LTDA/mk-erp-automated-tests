@@ -10,10 +10,10 @@ export default defineConfig({
     [
       "html",
       {
-        open: process.env.CI ? "never" : "always", // if on CI then "never" otherwise "always" show
+        open: process.env.CI ? "never" : "always",
       },
     ],
-    ["list", { printSteps: true }], // another reporter
+    ["list", { printSteps: true }],
   ],
   use: {
     launchOptions: {
