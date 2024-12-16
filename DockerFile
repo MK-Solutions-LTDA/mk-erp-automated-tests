@@ -1,8 +1,8 @@
 # Use uma imagem base leve com Node.js e ferramentas essenciais
-FROM mcr.microsoft.com/playwright:v1.39.0-focal
+FROM mcr.microsoft.com/playwright:v1.49.1-noble
 
 # Diretório de trabalho dentro do container
-WORKDIR /usr/src/app
+WORKDIR /bin/bash
 
 # Copie arquivos do projeto para o container
 COPY package.json package-lock.json ./
