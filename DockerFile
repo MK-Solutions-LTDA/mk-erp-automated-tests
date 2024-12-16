@@ -2,8 +2,7 @@
 FROM mcr.microsoft.com/playwright:v1.49.1-noble
 
 # Diretório de trabalho dentro do container
-WORKDIR /bin/bash
-
+WORKDIR /usr/src/app
 # Copie arquivos do projeto para o container
 COPY package.json package-lock.json ./
 COPY testes ./testes
