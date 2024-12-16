@@ -6,7 +6,7 @@ export default defineConfig({
   testDir: "testes/",
   fullyParallel: true,
   workers: process.env.CI_WORKERS ? 1 : 2,
-  reporter: [['html', { printSteps: true }]],
+  reporter: [['html', { printSteps: true, open: 'never' }]],
   use: {
     launchOptions: {
       args: ["--start-maximized", 
